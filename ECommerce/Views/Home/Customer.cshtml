@@ -1,0 +1,29 @@
+﻿
+@{
+    ViewBag.Title = "Customer";
+}
+<form enctype="multipart/form-data">
+    <br />
+    <h2 class="text-center">Customer Entry</h2>
+    <br />
+    <div class="form-control" style="width: 700px; margin-left: 200px">
+        <div class="row">
+            <div class="col ;form-control">
+                First Name<input type="text" id="cus_firstname" class="form-control" placeholder="ex: Juan " />
+                Last Name<input type="text" id="cus_lastname" class="form-control" placeholder="ex: Dela Cruz " />
+                Birthdate<input type="text" class="form-control" id="cus_birthdate"/>
+                Address<input type="text" class="form-control" id="cus_address"/>
+                Phone Number<input type="number" class="form-control" placeholder="ex: 09123456789" id="cus_number"/>
+            </div>
+            <div class="col">
+                Email Address<input type="text" id="cus_email" class="form-control" placeholder="ex: juandelacruz@email.com " />
+                Password<input type="password" id="cus_pass1" name="cus_pass" class="form-control" />
+                Confirm Password<input type="password" id="cus_pass2" name="cuss_pass2" class="form-control" />
+                <br /><br /><br /><button class="btn btn-primary" style="margin-left:62%" id="btn_submit">Submit</button>
+            </div>
+        </div>
+    </div>
+</form>
+
+<script src="~/Scripts/Jquery/jquery-3.7.1.min.js"></script>
+<script src="~/Scripts/MyJquery/Customer.js"></script>

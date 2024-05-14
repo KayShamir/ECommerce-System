@@ -1,0 +1,101 @@
+﻿
+@{
+    ViewBag.Title = "Product";
+}
+<div style="background-color: #693b23">
+    <style>
+        img {
+            display: block;
+            margin-top: -100px;
+            margin: 0 auto;
+            height: 100px;
+            line-height: 0;
+        }
+    </style>
+    <div>
+        <img src="~/header.jpg" />
+    </div>
+</div>
+<form enctype="multipart/form-data">
+    <div class="container">
+        <br />
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="prod_name">Product Name</label>
+                    <input type="text" id="prod_name" class="form-control" />
+                </div>
+                <div class="mb-3">
+                    <label for="insert_file" class="form-label">Insert Image</label>
+                    <input class="form-control" type="file" name="img" id="prod_file" accept="image/jpeg, image/bmp, image/jpg, image/png, image/gif">
+                </div>
+                <div class="form-group">
+                    <label for="prod_desc">Product Description</label>
+                    <textarea id="prod_desc" class="form-control" style="height: 200px; overflow-y: auto; overflow-x: hidden; resize: none;"></textarea>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="prod_price">Price</label>
+                    <input type="text" id="prod_price" class="form-control" inputmode="numeric" placeholder="₱">
+                </div>
+                <div class="form-group">
+                    <label for="prod_category">Category</label>
+                    <input type="text" id="prod_category" class="form-control" placeholder="e.g. sneakers, flip-flop etc." />
+                </div>
+                <div class="form-group">
+                    <label for="prod_color">Color</label>
+                    <select class="custom-select form-control" id="prod_color" style="width:min-content">
+                        <option selected>Choose Color</option>
+                        <option>Black</option>
+                        <option>White</option>
+                        <option>Brown</option>
+                        <option>Gray</option>
+                        <option>Navy Blue</option>
+                        <option>Beige</option>
+                        <option>Red</option>
+                        <option>Blue</option>
+                        <option>Green</option>
+                        <option>Yellow</option>
+                        <option>Orange</option>
+                        <option>Purple</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="prod_size">Size</label>
+                    <select class="custom-select form-control" id="prod_size" style="width: 200px;">
+                        <option selected>Choose Size (asia/eu)</option>
+                        <option>34</option>
+                        <option>35</option>
+                        <option>36</option>
+                        <option>37</option>
+                        <option>38</option>
+                        <option>39</option>
+                        <option>40</option>
+                        <option>41</option>
+                        <option>42</option>
+                        <option>43</option>
+                        <option>44</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="prod_material">Material</label>
+                    <input type="text" id="prod_material" class="form-control" placeholder="e.g. leathers, rubber, foam etc." />
+                </div>
+                <div class="form-group">
+                    <label for="prod_country_orig">Country Origin</label>
+                    <input type="text" id="prod_country_orig" class="form-control" />
+                </div>
+                <div class="form-group">
+                    <label for="prod_stock">Stocks</label>
+                    <input type="number" id="prod_stock" class="form-control" />
+                </div>
+            </div>
+        </div>
+        <br />
+        <button class="btn btn-primary" style="margin-left: 850px" id="btn_submit">Submit</button>
+    </div>
+</form>
+
+<script src="~/Scripts/Jquery/jquery-3.7.1.min.js"></script>
+<script src="~/Scripts/MyJquery/Product.js"></script>
