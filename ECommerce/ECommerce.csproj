@@ -170,6 +170,7 @@
     <Content Include="Scripts\Jquery\jquery-3.7.1.min.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
     <Content Include="Scripts\MyJquery\Customer.js" />
+    <Content Include="Scripts\MyJquery\Dashboard_Admin.js" />
     <Content Include="Scripts\MyJquery\Product.js" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
@@ -187,6 +188,7 @@
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Home\Product.cshtml" />
     <Content Include="Views\Home\Customer.cshtml" />
+    <Content Include="Views\Home\Dashboard_Admin.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\" />

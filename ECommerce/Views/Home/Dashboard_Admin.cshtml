@@ -1,0 +1,77 @@
+﻿@using System.Web;
+@using System.Web.Mvc;
+@using System.Data;
+@using System.Data.SqlClient;
+@using System.IO;
+@using System.Drawing;
+@using System.Drawing.Imaging;
+@using System.Web.Services;
+
+@{
+    ViewBag.Title = "Dashboard_Admin";
+}
+
+<h3 style="margin-left:-50px">Dashboard Admin</h3>
+
+@{
+    string conn_str = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\kaysh\source\repos\ECommerce\ECommerce\App_Data\Database1.mdf;Integrated Security=True";
+    using (var db = new SqlConnection(conn_str))
+    {
+        db.Open();
+        using (var cmd = db.CreateCommand())
+        {
+            cmd.CommandType = CommandType.Text;
+            cmd.CommandText = "SELECT * FROM PRODUCT";
+            using (var reader = cmd.ExecuteReader())
+            {
+                if (reader.HasRows)
+                {
+                    <table border="1" style="margin-right:-50px; margin-left:-50px">
+                        <thead>
+                            <tr>
+                                <th width="5%" style="text-align:center">ID</th>
+                                <th width="10%">NAME</th>
+                                <th width="10%">IMAGE</th>
+                                <th width="8%">STOCKS</th>
+                                <th width="10%">PRICE</th>
+                                <th width="12%">CATEGORY</th>
+                                <th width="7%">COLOR</th>
+                                <th width="5%">SIZE</th>
+                                <th width="10%">MATERIAL</th>
+                                <th width="10%">ORIGIN</th>
+                                <th width="18%">DESCRIPTION</th>
+                                <th width="15%"></th>
+                                <th width="15%"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @while (reader.Read())
+                            {
+                                <tr class="items">
+                                    <td style="text-align:center">@reader["PROD_ID"]</td>
+                                    <td style="font-size:smaller">@reader["PROD_NAME"]</td>
+                                    <td class="img" style="text-align: center;">
+                                        <center>
+                                            <img src="../Home/Image?filename=@HttpUtility.UrlEncode(reader["PROD_FILE"] + "")" style="max-width: 100px; max-height: 100px;" />
+                                            <!-- <input type="button" class="btnCart" name="btnsbmt" value="Add to Cart"  -->
+                                        </center>
+                                        </td>
+                                        <td>@reader["PROD_STOCK"]</td>
+                                        <td>₱@reader["PROD_PRICE"]</td>
+                                        <td>@reader["PROD_CATEGORY"]</td>
+                                        <td>@reader["PROD_COLOR"]</td>
+                                        <td>@reader["PROD_SIZE"]</td>
+                                        <td style="font-size:small">@reader["PROD_MATERIAL"]</td>
+                                        <td style="font-size:small">@reader["PROD_ORIGIN"]</td>
+                                        <td style="font-size:smaller">@reader["PROD_DESC"]</td>
+                                        <td><input type="button" name="edit_btn" value="Edit" class="btn btn-primary" /></td>
+                                        <td><input type="button" name="delete_btn" value="Delete" class="btn btn-danger"/></td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
+                }
+            }
+        }
+    }

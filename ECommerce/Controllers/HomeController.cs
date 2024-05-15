@@ -116,5 +116,24 @@ namespace ECommerce.Controllers
 
             return Json(data, JsonRequestBehavior.AllowGet);
         }
+        public ActionResult Dashboard_Admin()
+        {
+            return View();
+        }
+        [HttpGet]
+        public FileResult Image(string filename)
+        {
+            var folder = "C:\\Uploads";
+            var filepath = Path.Combine(folder, filename);
+
+            if (!System.IO.File.Exists(filepath))
+            {
+                throw new FileNotFoundException("File not found", filename);
+            }
+
+            var mime = System.Web.MimeMapping.GetMimeMapping(Path.GetFileName(filepath));
+            Response.Headers.Add("content-disposition", "inline");
+            return new FilePathResult(filepath, mime);
+        }
     }
 }
