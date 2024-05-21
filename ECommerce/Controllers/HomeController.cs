@@ -40,11 +40,11 @@ namespace ECommerce.Controllers
             string prod_name = Request["prod_name"];
             string prod_desc = Request["prod_desc"];
             double prod_price = Convert.ToDouble(Request["prod_price"]);
-            string prod_category = Request["prod_category"];
+            string prod_gender = Request["prod_gender"];
             string prod_color = Request["prod_color"];
             string prod_size = Request["prod_size"];
             string prod_material = Request["prod_material"];
-            string prod_origin = Request["prod_origin"];
+            string prod_category = Request["prod_category"];
             int prod_stock = Convert.ToInt32(Request["prod_stock"]);
 
             string image = Path.GetFileName(prod_file.FileName);
@@ -58,16 +58,16 @@ namespace ECommerce.Controllers
                 using (var cmd = db.CreateCommand())
                 {
                     cmd.CommandType = CommandType.Text;
-                    cmd.CommandText = "INSERT INTO PRODUCT (PROD_NAME, PROD_DESC, PROD_PRICE, PROD_CATEGORY, PROD_COLOR, PROD_SIZE, PROD_MATERIAL, PROD_ORIGIN, PROD_STOCK, [PROD_FILE]) " +
-                        "VALUES (@prod_name, @prod_desc, @prod_price, @prod_category, @prod_color, @prod_size, @prod_material, @prod_origin, @prod_stock, @prod_file)";
+                    cmd.CommandText = "INSERT INTO PRODUCT (PROD_NAME, PROD_DESC, PROD_PRICE, PROD_GENDER, PROD_COLOR, PROD_SIZE, PROD_MATERIAL, PROD_CATEGORY, PROD_STOCK, [PROD_FILE]) " +
+                        "VALUES (@prod_name, @prod_desc, @prod_price, @prod_gender, @prod_color, @prod_size, @prod_material, @prod_category, @prod_stock, @prod_file)";
                     cmd.Parameters.AddWithValue("@PROD_NAME", prod_name);                    
                     cmd.Parameters.AddWithValue("@PROD_DESC", prod_desc);                    
                     cmd.Parameters.AddWithValue("@PROD_PRICE", prod_price);                    
-                    cmd.Parameters.AddWithValue("@PROD_CATEGORY", prod_category);                    
+                    cmd.Parameters.AddWithValue("@PROD_GENDER", prod_gender);                    
                     cmd.Parameters.AddWithValue("@PROD_COLOR", prod_color);                    
                     cmd.Parameters.AddWithValue("@PROD_SIZE", prod_size);                    
                     cmd.Parameters.AddWithValue("@PROD_MATERIAL", prod_material);                    
-                    cmd.Parameters.AddWithValue("@PROD_ORIGIN", prod_origin);                    
+                    cmd.Parameters.AddWithValue("@PROD_CATEGORY", prod_category);                    
                     cmd.Parameters.AddWithValue("@PROD_STOCK", prod_stock);                    
                     cmd.Parameters.AddWithValue("@PROD_FILE", image);
 
@@ -135,5 +135,123 @@ namespace ECommerce.Controllers
             Response.Headers.Add("content-disposition", "inline");
             return new FilePathResult(filepath, mime);
         }
+        public ActionResult DeleteProduct()
+        {
+            var data = new List<object>();
+            var prod_id = Request["prod_id"];
+
+            using (var db = new SqlConnection(conn_str))
+            {
+                db.Open();
+                using (var cmd = db.CreateCommand())
+                {
+                    cmd.CommandType = CommandType.Text;
+                    cmd.CommandText = "DELETE FROM PRODUCT WHERE PROD_ID = @PROD_ID";
+                    cmd.Parameters.AddWithValue("@PROD_ID", prod_id);
+
+                    var ctr = cmd.ExecuteNonQuery();
+
+                    if (ctr >= 1)
+                    {
+                        data.Add(new
+                        {
+                            mess = 1
+                        });
+                    }
+
+                }
+            }
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+        [HttpGet]
+        public ActionResult GetProduct(int prod_id)
+        {
+            using (var db = new SqlConnection(conn_str))
+            {
+                db.Open();
+                using (var cmd = db.CreateCommand())
+                {
+                    cmd.CommandType = CommandType.Text;
+                    cmd.CommandText = "SELECT * FROM PRODUCT WHERE PROD_ID = @prod_id";
+                    cmd.Parameters.AddWithValue("@prod_id", prod_id);
+
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            var prod_data = new
+                            {
+                                prod_name = reader["PROD_NAME"].ToString(),
+                                prod_desc = reader["PROD_DESC"].ToString(),
+                                prod_price = reader["PROD_PRICE"].ToString(),
+                                prod_gender = reader["PROD_GENDER"].ToString(),
+                                prod_color = reader["PROD_COLOR"].ToString(),
+                                prod_size = reader["PROD_SIZE"].ToString(),
+                                prod_material = reader["PROD_MATERIAL"].ToString(),
+                                prod_category = reader["PROD_CATEGORY"].ToString(),
+                                prod_stock = reader["PROD_STOCK"].ToString(),
+                                prod_file = reader["PROD_FILE"].ToString(),
+                            };
+                            return Json(prod_data, JsonRequestBehavior.AllowGet);
+                        }
+                        else
+                        {
+                            return Json(null, JsonRequestBehavior.AllowGet);
+                        }
+                    }
+                }
+            }
+        }
+        [HttpPost]
+        public ActionResult PostProductUpdate()
+        {
+            var prod_id = Request.Form["prod_id"];
+            var prod_name = Request.Form["prod_name"];
+            var prod_desc = Request.Form["prod_desc"];
+            var prod_price = Request.Form["prod_price"];
+            var prod_gender = Request.Form["prod_gender"];
+            var prod_color = Request.Form["prod_color"];
+            var prod_size = Request.Form["prod_size"];
+            var prod_material = Request.Form["prod_material"];
+            var prod_category = Request.Form["prod_category"];
+            var prod_stock = Request.Form["prod_stock"];
+            var insert_file = Request.Files["insert_file"]; // Handle the file if needed
+
+            using (var db = new SqlConnection(conn_str))
+            {
+                db.Open();
+                using (var cmd = db.CreateCommand())
+                {
+                    cmd.CommandType = CommandType.Text;
+                    cmd.CommandText = "UPDATE PRODUCT SET PROD_NAME = @prod_name, PROD_DESC = @prod_desc, PROD_PRICE = @prod_price, PROD_GENDER = @prod_gender, PROD_COLOR = @prod_color, PROD_SIZE = @prod_size, PROD_MATERIAL = @prod_material, PROD_CATEGORY = @prod_category, PROD_STOCK = @prod_stock WHERE PROD_ID = @prod_id";
+                    cmd.Parameters.AddWithValue("@prod_id", prod_id);
+                    cmd.Parameters.AddWithValue("@prod_name", prod_name);
+                    cmd.Parameters.AddWithValue("@prod_desc", prod_desc);
+                    cmd.Parameters.AddWithValue("@prod_price", prod_price);
+                    cmd.Parameters.AddWithValue("@prod_gender", prod_gender);
+                    cmd.Parameters.AddWithValue("@prod_color", prod_color);
+                    cmd.Parameters.AddWithValue("@prod_size", prod_size);
+                    cmd.Parameters.AddWithValue("@prod_material", prod_material);
+                    cmd.Parameters.AddWithValue("@prod_category", prod_category);
+                    cmd.Parameters.AddWithValue("@prod_stock", prod_stock);
+
+                    // Handle file upload if applicable
+                    if (insert_file != null && insert_file.ContentLength > 0)
+                    {
+                        var filePath = Path.Combine(Server.MapPath("~/Uploads"), Path.GetFileName(insert_file.FileName));
+                        insert_file.SaveAs(filePath);
+                        // Update the file path in the database if needed
+                        cmd.CommandText += ", PROD_FILE = @prod_file";
+                        cmd.Parameters.AddWithValue("@prod_file", filePath);
+                    }
+
+                    var ctr = cmd.ExecuteNonQuery();
+                    var result = new { success = ctr > 0 };
+
+                    return Json(result, JsonRequestBehavior.AllowGet);
+                }
+            }
+        }
+
     }
 }
