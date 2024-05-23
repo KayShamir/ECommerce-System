@@ -252,6 +252,10 @@ namespace ECommerce.Controllers
                 }
             }
         }
+        public ActionResult User_Dashboard()
+        {
+            return View();
+        }
 
     }
 }

@@ -1,0 +1,98 @@
+﻿@using System.Web;
+@using System.Web.Mvc;
+@using System.Data;
+@using System.Data.SqlClient;
+@using System.IO;
+@using System.Drawing;
+@using System.Drawing.Imaging;
+@using System.Web.Services;
+@{
+    ViewBag.Title = "User_Dashboard";
+}
+
+<head>
+    <style>
+        .offcanvas-wider {
+            width: 600px !important;
+        }
+    </style>
+</head>
+<!-- Button with Image -->
+<button class="btn btn-light btn-image float-end" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">
+    <img src="~/Shopping Cart.svg" alt="Toggle right offcanvas" style="width: 40px">
+</button>
+@{
+    string conn_str = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\kaysh\source\repos\ECommerce\ECommerce\App_Data\Database1.mdf;Integrated Security=True";
+    using (var db = new SqlConnection(conn_str))
+    {
+        db.Open();
+        using (var cmd = db.CreateCommand())
+        {
+            cmd.CommandType = CommandType.Text;
+            cmd.CommandText = "SELECT * FROM PRODUCT";
+            using (var reader = cmd.ExecuteReader())
+            {
+                if (reader.HasRows)
+                {
+                    <table class="table table-striped">
+                        <thead class="bg-secondary text-white">
+                            <tr>
+                                <th width="5%" style="text-align:center">ID</th>
+                                <th width="10%">NAME</th>
+                                <th width="10%">IMAGE</th>
+                                <th width="8%">STOCKS</th>
+                                <th width="10%">PRICE</th>
+                                <th width="12%">GENDER</th>
+                                <th width="7%">COLOR</th>
+                                <th width="5%">SIZE</th>
+                                <th width="10%">MATERIAL</th>
+                                <th width="10%">CATEGORY</th>
+                                <th width="18%">DESCRIPTION</th>
+                                <th width="15%">QUANTITY</th>
+                                <th width="15%"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @while (reader.Read())
+                            {
+                                <tr class="items">
+                                    <td style="text-align:center" class="prod_id">@reader["PROD_ID"]</td>
+                                    <td style="font-size:smaller">@reader["PROD_NAME"]</td>
+                                    <td class="img" style="text-align: center;">
+                                        <center>
+                                            <img src="../Home/Image?filename=@HttpUtility.UrlEncode(reader["PROD_FILE"] + "")" style="max-width: 100px; max-height: 100px;" />
+                                        </center>
+                                    </td>
+                                    <td>@reader["PROD_STOCK"]</td>
+                                    <td>₱@reader["PROD_PRICE"]</td>
+                                    <td>@reader["PROD_GENDER"]</td>
+                                    <td>@reader["PROD_COLOR"]</td>
+                                    <td>@reader["PROD_SIZE"]</td>
+                                    <td style="font-size:small">@reader["PROD_MATERIAL"]</td>
+                                    <td style="font-size:small">@reader["PROD_CATEGORY"]</td>
+                                    <td style="font-size:smaller">@reader["PROD_DESC"]</td>
+                                    <td><input type="number" name="cart_qty" id="btnQty" /></td>
+                                    <td><input type="button" name="delete_btn" value="Delete" class="btn btn-danger btnDelete" data-bs-toggle="modal" data-bs-target="#deleteModal" id="btnDelete" /></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+            }
+        }
+    }
+}
+
+<body>
+
+    <!-- Offcanvas -->
+    <div class="offcanvas offcanvas-end offcanvas-wider" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
+        <div class="offcanvas-header">
+            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+            <!-- Offcanvas content here -->
+        </div>
+    </div>
+</body>
+
