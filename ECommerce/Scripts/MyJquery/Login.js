@@ -1,5 +1,6 @@
 ﻿$(document).ready(function () {
-    $('#btn_submit').click(function () {
+    $('#btn_submit').click(function (event) {
+        event.preventDefault(); // Prevent default form submission
         var data = new FormData();
         data.append('cus_email', $('#cus_email').val());
         data.append('cus_pass', $('#cus_pass').val());
@@ -23,5 +24,9 @@
                 alert('Error processing your request.');
             }
         });
+    });
+
+    $('#btnCreate').click(function () {
+        window.location.href = '../Home/Customer';
     });
 });

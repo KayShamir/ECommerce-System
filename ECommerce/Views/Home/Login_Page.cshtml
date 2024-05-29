@@ -1,7 +1,7 @@
-﻿
-@{
+﻿@{
     ViewBag.Title = "Login_Page";
 }
+
 <form class="container">
     <div class="row">
         <div class="col-6" style="background-color: #2457C5">
@@ -12,9 +12,11 @@
                 <div class="row">
                     <div class="col">
                         <br /> <br /> <br /> <br />
-                        <h2 class="text-center text-center" style="margin-left: -30%">Login</h2>
+                        <h2>Welcome to Nice Shoes </h2><br />
                         Username<input type="text" id="cus_email" class="form-control" placeholder="juandelacruz@email.com " required />
-                        Password<input type="password" id="cus_pass" name="cus_pass" class="form-control" required />
+                        Password<input type="password" id="cus_pass" name="cus_pass" class="form-control" required /><br />
+                        <button type="button" class="btn btn-primary" id="btn_submit">Login</button>&nbsp;&nbsp;
+                        <button type="button" class="btn btn-outline-primary" id="btnCreate">Create an Account?</button>
                         <br /> <br /><br /> <br /><br />
                     </div>
                 </div>
@@ -23,8 +25,6 @@
     </div>
 </form>
 <br />
-<button class="btn btn-primary" style="margin-left:26%; margin-top:-25%" id="btn_submit">Submit</button>
-
 
 <script src="~/Scripts/Jquery/jquery-3.7.1.min.js"></script>
 <script src="~/Scripts/MyJquery/Login.js"></script>
