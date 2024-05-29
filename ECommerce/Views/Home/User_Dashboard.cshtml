@@ -6,14 +6,80 @@
 @using System.Drawing;
 @using System.Drawing.Imaging;
 @using System.Web.Services;
+
 @{
     ViewBag.Title = "User_Dashboard";
 }
+<head>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
+    <style>
+        #toast-container > .toast-success {
+            background-color: #28a745 !important;
+            opacity: 1 !important;
+        }
 
+            #toast-container > .toast-success .toast-message {
+                color: #ffffff !important;
+            }
+    </style>
+</head>
+<body>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <script>
+        toastr.options = {
+            "closeButton": false,
+            "debug": false,
+            "newestOnTop": true,
+            "progressBar": true,
+            "positionClass": "toast-top-right",
+            "preventDuplicates": false,
+            "onclick": null,
+            "showDuration": "300",
+            "hideDuration": "1000",
+            "timeOut": "3000",
+            "extendedTimeOut": "1000",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut"
+        };
+    </script>
+</body>
 <head>
     <style>
         .offcanvas-wider {
             width: 600px !important;
+        }
+
+        .qty-btn-decrement,
+        .qty-btn-increment {
+            background-color: #f0f0f0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 5px 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+            .qty-btn-decrement:hover,
+            .qty-btn-increment:hover {
+                background-color: #e0e0e0;
+                border-color: #bbb;
+            }
+
+        .qty-input {
+            width: 40px;
+            text-align: center;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin: 0 5px;
+            padding: 5px;
+            font-size: 16px;
+            font-weight: bold;
+            background-color: #f9f9f9;
         }
     </style>
 </head>
@@ -21,6 +87,10 @@
 <button class="btn btn-light btn-image float-end" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">
     <img src="~/Shopping Cart.svg" alt="Toggle right offcanvas" style="width: 40px">
 </button>
+<br />
+
+<h2>Welcome, User!</h2>
+<br />
 @{
     string conn_str = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\kaysh\source\repos\ECommerce\ECommerce\App_Data\Database1.mdf;Integrated Security=True";
     using (var db = new SqlConnection(conn_str))
@@ -34,65 +104,340 @@
             {
                 if (reader.HasRows)
                 {
-                    <table class="table table-striped">
-                        <thead class="bg-secondary text-white">
-                            <tr>
-                                <th width="5%" style="text-align:center">ID</th>
-                                <th width="10%">NAME</th>
-                                <th width="10%">IMAGE</th>
-                                <th width="8%">STOCKS</th>
-                                <th width="10%">PRICE</th>
-                                <th width="12%">GENDER</th>
-                                <th width="7%">COLOR</th>
-                                <th width="5%">SIZE</th>
-                                <th width="10%">MATERIAL</th>
-                                <th width="10%">CATEGORY</th>
-                                <th width="18%">DESCRIPTION</th>
-                                <th width="15%">QUANTITY</th>
-                                <th width="15%"></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @while (reader.Read())
-                            {
-                                <tr class="items">
-                                    <td style="text-align:center" class="prod_id">@reader["PROD_ID"]</td>
-                                    <td style="font-size:smaller">@reader["PROD_NAME"]</td>
-                                    <td class="img" style="text-align: center;">
-                                        <center>
-                                            <img src="../Home/Image?filename=@HttpUtility.UrlEncode(reader["PROD_FILE"] + "")" style="max-width: 100px; max-height: 100px;" />
-                                        </center>
-                                    </td>
-                                    <td>@reader["PROD_STOCK"]</td>
-                                    <td>₱@reader["PROD_PRICE"]</td>
-                                    <td>@reader["PROD_GENDER"]</td>
-                                    <td>@reader["PROD_COLOR"]</td>
-                                    <td>@reader["PROD_SIZE"]</td>
-                                    <td style="font-size:small">@reader["PROD_MATERIAL"]</td>
-                                    <td style="font-size:small">@reader["PROD_CATEGORY"]</td>
-                                    <td style="font-size:smaller">@reader["PROD_DESC"]</td>
-                                    <td><input type="number" name="cart_qty" id="btnQty" /></td>
-                                    <td><input type="button" name="delete_btn" value="Delete" class="btn btn-danger btnDelete" data-bs-toggle="modal" data-bs-target="#deleteModal" id="btnDelete" /></td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
+                    <div class="row">
+                        @while (reader.Read())
+                        {
+                            <div class="col-md-4" style="width:30%">
+                                <div class="card mb-4" style="height: 350px;">
+                                    <img class="card-img-top" src="../Home/Image?filename=@HttpUtility.UrlEncode(reader["PROD_FILE"] + "")" alt="@reader["PROD_NAME"]">
+                                    <div class="card-body" style="height:50%">
+                                        <h5 class="card-title d-flex justify-content-between">
+                                            <p class="fs-5 product-name">
+                                                @reader["PROD_NAME"]
+                                                <span hidden>
+                                                    | @reader["PROD_PRICE"]| @reader["PROD_DESC"]| @reader["PROD_PRICE"]| @reader["PROD_GENDER"]| @reader["PROD_COLOR"]| @reader["PROD_SIZE"]| @reader["PROD_MATERIAL"]| @reader["PROD_CATEGORY"]| @reader["PROD_STOCK"]
+                                                </span>
+                                            </p>
+                                            <span class="product-price">₱@reader["PROD_PRICE"]</span>
+                                        </h5>
+                                        @if ((int)reader["PROD_STOCK"] == 0)
+                                        {
+                                            <p class="card-text">Stocks: <span style="color:red">Unavailable</span></p>
+                                        }
+                                        else
+                                        {
+                                            <p class="card-text">Stocks: @reader["PROD_STOCK"]</p>
+                                        }
+                                    </div>
+                                    <div class="card-footer mb-2" style="padding-top:2%">
+                                        <div class="number-input">
+                                            <button class="quantity-button" onclick="this.parentNode.querySelector('input[type=number]').stepDown()">-</button>
+                                            <input class="quantity" min="0" name="quantity" value="0" type="number">
+                                            <button class="quantity-button" onclick="this.parentNode.querySelector('input[type=number]').stepUp()">+</button>
+                                        </div>
+                                        <button class="add_cart btn btn-primary" style="margin-left:17%" data-product-id="@reader["PROD_ID"]">Add to Cart</button>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
                 }
             }
         }
     }
 }
 
-<body>
+<!-- Delete Product Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Delete Product</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete this product?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="btnNo" data-bs-dismiss="modal">No</button>
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal" id="btnYes">Yes</button>
+            </div>
+        </div>
+    </div>
+</div>
 
+<!-- Modal -->
+<div class="modal fade" id="productModal" tabindex="-1" aria-labelledby="productModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="productModalLabel">Product Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p><strong>Name:</strong> <span id="modalProdName"></span></p>
+                <p><strong>Price:</strong> ₱<span id="modalProdPrice"></span></p>
+                <p><strong>Stocks:</strong> <span id="modalProdStocks"></span></p>
+                <p><strong>Gender:</strong> <span id="modalProdGender"></span></p>
+                <p><strong>Color:</strong> <span id="modalProdColor"></span></p>
+                <p><strong>Size:</strong> <span id="modalProdSize"></span></p>
+                <p><strong>Material:</strong> <span id="modalProdMaterial"></span></p>
+                <p><strong>Category:</strong> <span id="modalProdCategory"></span></p>
+                <p><strong>Description:</strong> <span id="modalProdDesc"></span></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .card {
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s;
+        max-height: 400px;
+    }
+
+    card:hover {
+        transform: scale(1.05);
+    }
+
+    .card-img-top {
+        height: 200px;
+        object-fit: cover;
+    }
+
+    .card-body {
+        font-size: 0.8rem;
+        margin: 0px;
+    }
+
+    .card-title {
+        font-size: 1rem;
+    }
+
+    .card-text {
+        font-size: 0.8rem;
+    }
+
+    .card-footer {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        padding: 1rem;
+    }
+
+    .number-input {
+        display: inline-flex;
+        align-items: center;
+        border: 1px solid #ced4da;
+        border-radius: 0.25rem;
+        overflow: hidden;
+    }
+
+        .number-input button {
+            background-color: #f8f9fa;
+            border: none;
+            width: 2rem;
+            height: 2rem;
+            font-size: 1.25rem;
+            color: #6c757d;
+            cursor: pointer;
+            line-height: 1rem;
+        }
+
+        .number-input .quantity {
+            border: none;
+            text-align: center;
+            width: 3rem;
+            height: 2rem;
+            font-size: 1rem;
+            outline: none;
+        }
+
+        .number-input input[type="number"] {
+            -webkit-appearance: textfield !important;
+            -moz-appearance: textfield !important;
+            appearance: textfield !important;
+        }
+
+        .number-input input[type=number]::-webkit-inner-spin-button,
+        .number-input input[type=number]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+        }
+
+    .minus:before,
+    .plus:before {
+        content: '-';
+        display: block;
+        width: 100%;
+        height: 100%;
+        text-align: center;
+        background-color: #4979D1;
+    }
+
+    .plus:before {
+        content: '+';
+    }
+
+    .card-footer {
+        display: flex;
+        align-items: center;
+    }
+
+    .number-input {
+        display: flex;
+        align-items: center;
+        margin-right: 10px; /* Space between quantity and add-to-cart button */
+    }
+
+    .quantity-button {
+        background-color: #007BFF; /* Blue background */
+        border: none; /* Remove borders */
+        color: white; /* White text */
+        width: 2rem; /* Fixed width */
+        height: 2rem; /* Fixed height */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.25rem; /* Font size */
+        cursor: pointer; /* Pointer/hand icon */
+        border-radius: 0; /* No rounded corners */
+    }
+
+        .quantity-button:hover {
+            background-color: #D2D5D8; /* Dark gray on hover */
+        }
+
+    .quantity {
+        text-align: center; /* Center the number */
+        width: 3rem; /* Adjust width if necessary */
+        border: 1px solid #ced4da; /* Border style */
+        font-size: 1rem; /* Font size */
+        height: 2rem; /* Fixed height to match buttons */
+        margin: 0; /* Space between buttons and input */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        outline: none; /* Remove outline */
+    }
+
+    .add-to-cart {
+        background-color: #2457C5; /* Blue background */
+        border: none; /* Remove borders */
+        color: white; /* White text */
+        padding: 10px 20px; /* Some padding */
+        text-align: center; /* Centered text */
+        text-decoration: none; /* Remove underline */
+        display: inline-block; /* Make the button inline */
+        font-size: 80%; /* Font size */
+        cursor: pointer; /* Pointer/hand icon */
+        border-radius: 5px; /* Rounded corners */
+        height: 35px; /* Fixed height */
+        margin-left: 100%; /* Margin left for spacing */
+    }
+
+        .add-to-cart:hover {
+            background-color: #254682; /* Darker blue on hover */
+        }
+</style>
+
+<body>
     <!-- Offcanvas -->
     <div class="offcanvas offcanvas-end offcanvas-wider" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
         <div class="offcanvas-header">
             <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
         <div class="offcanvas-body">
-            <!-- Offcanvas content here -->
+            @{
+                var cus_id = Session["UserId"];
+                if (cus_id != null)
+                {
+                    string conn_string = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\kaysh\source\repos\ECommerce\ECommerce\App_Data\Database1.mdf;Integrated Security=True";
+                    using (var db = new SqlConnection(conn_string))
+                    {
+                        db.Open();
+                        using (var cmd = db.CreateCommand())
+                        {
+                            cmd.CommandType = CommandType.Text;
+                            cmd.CommandText = @"
+                                    SELECT
+                                        p.prod_id,
+                                        p.prod_name,
+                                        p.prod_file,
+                                        c.cart_qty,
+                                        p.prod_price,
+                                        c.cart_total
+                                    FROM
+                                        CART c
+                                    JOIN
+                                        PRODUCT p
+                                    ON
+                                        c.prod_id = p.prod_id
+                                    WHERE
+                                        c.cus_id = @cus_id";
+                            cmd.Parameters.AddWithValue("@cus_id", cus_id);
+                            using (var reader = cmd.ExecuteReader())
+                            {
+                                <table border="1" id="datatable" class="table table-group-divider">
+                                    <thead>
+                                        <tr>
+                                            <th width="12%">Image</th>
+                                            <th width="10%">Product Name</th>
+                                            <th width="10%">Total Price</th>
+                                            <th width="17%">Quantity</th>
+                                            <th width="5%">ACTION</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @while (reader.Read())
+                                        {
+                                            var prodId = reader["prod_id"].ToString();
+                                            var prodName = reader["prod_name"].ToString();
+                                            var prodImage = reader["prod_file"].ToString();
+                                            var cartCount = reader["cart_qty"].ToString();
+                                            var totalPrice = reader["cart_total"].ToString();
+                                            var unitPrice = (double.Parse(totalPrice) / int.Parse(cartCount)).ToString("F2");
+
+                                            <tr class="items">
+                                                <td hidden class="prod_id">@prodId</td>
+                                                <td style="text-align: center">
+                                                    <img src="../Home/Image?filename=@HttpUtility.UrlEncode(prodImage)" width="50%" />
+                                                </td>
+                                                <td class="prod-id">@prodName</td>
+                                                <td>
+                                                    <span id="price-@prodId" data-unit-price="@unitPrice">@totalPrice</span>
+                                                </td>
+                                                <td>
+                                                    <button type="button" class="qty-btn-decrement" onclick="decrementQuantity('@prodId')">-</button>
+                                                    <input type="text" id="qty-@prodId" value="@cartCount" readonly class="qty-input" />
+                                                    <button type="button" class="qty-btn-increment" onclick="incrementQuantity('@prodId')">+</button>
+                                                </td>
+                                                <td>
+                                                    <span>
+                                                        <button type="button" name="btn_delete" class="btn btn-danger btnDelete" id="btnDelete" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                                                            <img src="~/Delete.svg" alt="Edit" style="width: 20px; height: 20px; margin-top: -25%; margin-left:10%" class="ml-4" />
+                                                        </button>
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    <p>User not logged in.</p>
+                }
+            }
         </div>
     </div>
+
 </body>
 
+<script src="~/Scripts/Jquery/jquery-3.7.1.min.js"></script>
+<script src="~/Scripts/MyJquery/Product_Link.js"></script>
+<script src="~/Scripts/MyJquery/Cart.js"></script>

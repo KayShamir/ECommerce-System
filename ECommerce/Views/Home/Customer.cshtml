@@ -2,7 +2,7 @@
 @{
     ViewBag.Title = "Customer";
 }
-<form enctype="multipart/form-data">
+<form enctype="multipart/form-data" oninput="cuss_pass2.setCustomValidity(cuss_pass2.value != cus_pass.value ? 'Password do not match.' : '')">
     <br />
     <h2 class="text-center">Customer Entry</h2>
     <br />
@@ -11,19 +11,19 @@
             <div class="col ;form-control">
                 First Name<input type="text" id="cus_firstname" class="form-control" placeholder="ex: Juan " />
                 Last Name<input type="text" id="cus_lastname" class="form-control" placeholder="ex: Dela Cruz " />
-                Birthdate<input type="text" class="form-control" id="cus_birthdate"/>
+                Birthdate<input type="date" class="form-control" id="cus_birthdate"/>
                 Address<input type="text" class="form-control" id="cus_address"/>
                 Phone Number<input type="number" class="form-control" placeholder="ex: 09123456789" id="cus_number"/>
             </div>
             <div class="col">
-                Email Address<input type="text" id="cus_email" class="form-control" placeholder="ex: juandelacruz@email.com " />
-                Password<input type="password" id="cus_pass1" name="cus_pass" class="form-control" />
+                Email Address<input type="email" id="cus_email" class="form-control" placeholder="ex: juandelacruz@email.com " required/>
+                Password<input type="password" id="cus_pass" name="cus_pass" class="form-control" />
                 Confirm Password<input type="password" id="cus_pass2" name="cuss_pass2" class="form-control" />
                 <br /><br /><br /><button class="btn btn-primary" style="margin-left:62%" id="btn_submit">Submit</button>
             </div>
         </div>
     </div>
-</form>
+</form> 
 
 <script src="~/Scripts/Jquery/jquery-3.7.1.min.js"></script>
 <script src="~/Scripts/MyJquery/Customer.js"></script>

@@ -147,10 +147,14 @@
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\bootstrap.rtl.css" />
     <Content Include="Content\bootstrap.rtl.min.css" />
+    <Content Include="Delete.svg" />
+    <Content Include="Edit.svg" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="Group 61.svg" />
     <Content Include="header.jpg" />
+    <Content Include="Pencil.svg" />
     <Content Include="Scripts\bootstrap.bundle.js" />
     <Content Include="Scripts\bootstrap.bundle.min.js" />
     <Content Include="Scripts\bootstrap.esm.js" />
@@ -169,10 +173,13 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\Jquery\jquery-3.7.1.min.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
+    <Content Include="Scripts\MyJquery\Cart.js" />
     <Content Include="Scripts\MyJquery\Customer.js" />
     <Content Include="Scripts\MyJquery\Dashboard_Admin.js" />
     <Content Include="Scripts\MyJquery\Delete.js" />
+    <Content Include="Scripts\MyJquery\Login.js" />
     <Content Include="Scripts\MyJquery\Product.js" />
+    <Content Include="Scripts\MyJquery\Product_Link.js" />
     <Content Include="Scripts\MyJquery\Update.js" />
     <Content Include="Shopping Cart.svg" />
     <Content Include="Web.config" />
@@ -193,6 +200,7 @@
     <Content Include="Views\Home\Customer.cshtml" />
     <Content Include="Views\Home\Dashboard_Admin.cshtml" />
     <Content Include="Views\Home\User_Dashboard.cshtml" />
+    <Content Include="Views\Home\Login_Page.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\" />

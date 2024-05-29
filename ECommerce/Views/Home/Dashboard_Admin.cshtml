@@ -11,16 +11,16 @@
     ViewBag.Title = "Dashboard_Admin";
 }
 <head>
-        <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
-        <style>
-            #toast-container > .toast-success {
-                background-color: #28a745 !important; 
-                opacity: 1 !important;
-            }
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
+    <style>
+        #toast-container > .toast-success {
+            background-color: #28a745 !important;
+            opacity: 1 !important;
+        }
             #toast-container > .toast-success .toast-message {
                 color: #ffffff !important;
             }
-        </style>
+    </style>
 </head>
 <body>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -31,13 +31,13 @@
             "debug": false,
             "newestOnTop": true,
             "progressBar": true,
-            "positionClass": "toast-top-right", // Adjust position as needed
+            "positionClass": "toast-top-right",
             "preventDuplicates": false,
             "onclick": null,
-            "showDuration": "300", // Animation duration
-            "hideDuration": "1000", // Animation duration
-            "timeOut": "3000", // 5 seconds
-            "extendedTimeOut": "1000", // 1 second longer than 'timeOut'
+            "showDuration": "300",
+            "hideDuration": "1000",
+            "timeOut": "3000", 
+            "extendedTimeOut": "1000",
             "showEasing": "swing",
             "hideEasing": "linear",
             "showMethod": "fadeIn",
@@ -46,8 +46,17 @@
     </script>
 </body>
 
-<h3 style="margin-top:10px">Admin Dashboard</h3>
-<div class="float-end" style="margin-bottom:1%">Want to add product?&nbsp;<button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addModal">Add</button></div>
+<h3 style="margin-top:10px">Welcome, Admin!</h3>
+
+<div class="float-end" style="margin-bottom:1%">
+    Want to add product?&nbsp;
+    <span>
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addModal">
+            <img src="~/Group 61.svg" style="width: 30px; height: 30px; margin-top: 5%" />
+        </button>
+    </span>
+</div>
+
 
 <!-- Add Product Modal -->
 <div class="modal fade" id="addModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -295,7 +304,7 @@
                                 <th width="5%">SIZE</th>
                                 <th width="10%">MATERIAL</th>
                                 <th width="10%">CATEGORY</th>
-                                <th width="18%">DESCRIPTION</th>
+                                <th width="30%" style="max-width: 30%; word-wrap: break-word;">DESCRIPTION</th>
                                 <th width="15%"></th>
                                 <th width="15%"></th>
                             </tr>
@@ -318,13 +327,26 @@
                                     <td>@reader["PROD_SIZE"]</td>
                                     <td style="font-size:small">@reader["PROD_MATERIAL"]</td>
                                     <td style="font-size:small">@reader["PROD_CATEGORY"]</td>
-                                    <td style="font-size:smaller">@reader["PROD_DESC"]</td>
-                                    <td><input type="button" name="edit_btn" value="Edit" class="btn btn-primary btnEdit" id="btnEdit" data-bs-toggle="modal" data-bs-target="#updateModal" /></td>
-                                    <td><input type="button" name="delete_btn" value="Delete" class="btn btn-danger btnDelete" data-bs-toggle="modal" data-bs-target="#deleteModal" id="btnDelete" /></td>
+                                    <td style="font-size:smaller; max-width: 18%; word-wrap: break-word;">@reader["PROD_DESC"]</td>
+                                    <td>
+                                        <span>
+                                            <button type="button" name="edit_btn" class="btn btn-primary btnEdit" id="btnEdit" data-bs-toggle="modal" data-bs-target="#updateModal">
+                                                <img src="~/Edit.svg" alt="Edit" style="width: 20px; height: 20px; margin-top: -25%" />
+                                            </button>
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span>
+                                            <button type="button" name="delete_btn" class="btn btn-danger btnDelete" id="btnDelete" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                                                <img src="~/Delete.svg" alt="Edit" style="width: 20px; height: 20px; margin-top: -25%" />
+                                            </button>
+                                        </span>
+                                    </td>
                                 </tr>
                             }
                         </tbody>
                     </table>
+
                 }
             }
         }
