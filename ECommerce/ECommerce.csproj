@@ -152,8 +152,13 @@
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="Group 104 %281%29.svg" />
+    <Content Include="Group 104 %282%29.svg" />
+    <Content Include="Group 104 %283%29.svg" />
+    <Content Include="Group 104.svg" />
     <Content Include="Group 61.svg" />
     <Content Include="header.jpg" />
+    <Content Include="Loregas, Kay Shamir - Copy.jpg" />
     <Content Include="Pencil.svg" />
     <Content Include="Scripts\bootstrap.bundle.js" />
     <Content Include="Scripts\bootstrap.bundle.min.js" />
@@ -161,6 +166,9 @@
     <Content Include="Scripts\bootstrap.esm.min.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
+    <Content Include="🦆 icon _arrow back outline_.svg" />
+    <Content Include="🦆 icon _logout_ %281%29.svg" />
+    <Content Include="🦆 icon _logout_.svg" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.4.1.js" />
     <Content Include="Scripts\jquery-3.4.1.min.js" />
@@ -201,6 +209,7 @@
     <Content Include="Views\Home\Dashboard_Admin.cshtml" />
     <Content Include="Views\Home\User_Dashboard.cshtml" />
     <Content Include="Views\Home\Login_Page.cshtml" />
+    <Content Include="Views\Home\Product_Details.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\" />

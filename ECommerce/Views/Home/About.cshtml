@@ -1,9 +1,103 @@
-﻿@{
-    ViewBag.Title = "About";
-}
-<main aria-labelledby="title">
-    <h2 id="title">@ViewBag.Title.</h2>
-    <h3>@ViewBag.Message</h3>
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Commerce Web Application</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 16px;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+        }
 
-    <p>Use this area to provide additional information.</p>
-</main>
+        header {
+            background-color: #f8f9fa;
+            padding: 20px;
+            text-align: center;
+        }
+
+        main {
+            padding: 20px;
+        }
+
+        h1 {
+            font-size: 24px;
+            font-weight: normal;
+        }
+
+        h2 {
+            font-size: 20px;
+            font-weight: normal;
+            margin-top: 20px;
+        }
+
+        h3 {
+            font-size: 18px;
+            font-weight: normal;
+            margin-top: 15px;
+        }
+
+        p {
+            font-size: 16px;
+            font-weight: normal;
+            margin-top: 10px;
+        }
+
+        ol {
+            list-style-type: none;
+            padding-left: 0;
+        }
+
+        ul {
+            list-style-type: disc;
+            margin-left: 20px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Welcome to our E-Commerce Web Application!</h1>
+    </header>
+    <main>
+        <section>
+            <h2>Key Features:</h2>
+            <ol>
+                <li>
+                    <h3>Product Management:</h3>
+                    <ul>
+                        <li><strong>Create:</strong> Easily add new products to our database, including details like name, description, price, and images.</li>
+                        <li><strong>Edit:</strong> Update existing product information as needed, ensuring accuracy and relevance.</li>
+                        <li><strong>Delete:</strong> Remove products from the database when they're no longer available or relevant.</li>
+                    </ul>
+                </li>
+                <li>
+                    <h3>User-friendly Interface:</h3>
+                    <ul>
+                        <li>Our intuitive user interface allows customers to browse through products, add items to their cart, and proceed to checkout seamlessly.</li>
+                        <li>Clear navigation and structured layouts ensure a pleasant shopping experience for users of all levels.</li>
+                    </ul>
+                </li>
+                <li>
+                    <h3>Responsive Design:</h3>
+                    <ul>
+                        <li>Our application is built with responsiveness in mind, ensuring compatibility across various devices and screen sizes.</li>
+                        <li>Whether users are accessing the platform from a desktop, laptop, tablet, or smartphone, they'll enjoy a consistent and optimized experience.</li>
+                    </ul>
+                </li>
+            </ol>
+        </section>
+        <section>
+            <h2>About Us:</h2>
+            <p>We are a team of enthusiastic students and beginners passionate about software development. This project represents our dedication to learning and applying modern web technologies to solve real-world problems. We welcome feedback and suggestions for improvement as we continue to refine and enhance our application.</p>
+        </section>
+        <section>
+            <h2>Get Started:</h2>
+            <p>Explore our E-Commerce Web Application today and discover a convenient and enjoyable way to shop online. Whether you're a customer looking for quality products or an administrator managing the platform, we're here to support your needs every step of the way.</p>
+            <p>Thank you for choosing our E-Commerce Web Application. Happy shopping!</p>
+        </section>
+    </main>
+</body>
+</html>

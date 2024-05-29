@@ -2,24 +2,28 @@
 @{
     ViewBag.Title = "Customer";
 }
+<span>
+    <button type="button" class="btn float-start" id="btnBack">
+        <img src="~/🦆 icon _arrow back outline_.svg" alt="Edit" style="width: 40px; height: 50px; margin-top: 30%; margin-right: 10px" />
+    </button>
+</span>
 <form enctype="multipart/form-data" oninput="cuss_pass2.setCustomValidity(cuss_pass2.value != cus_pass.value ? 'Password do not match.' : '')">
-    <br />
-    <h2 class="text-center">Customer Entry</h2>
+    &nbsp;<h2 style="margin-left:18%">Complete your Registration</h2>
     <br />
     <div class="form-control" style="width: 700px; margin-left: 200px">
         <div class="row">
             <div class="col ;form-control">
                 First Name<input type="text" id="cus_firstname" class="form-control" placeholder="ex: Juan " />
                 Last Name<input type="text" id="cus_lastname" class="form-control" placeholder="ex: Dela Cruz " />
-                Birthdate<input type="date" class="form-control" id="cus_birthdate"/>
-                Address<input type="text" class="form-control" id="cus_address"/>
-                Phone Number<input type="number" class="form-control" placeholder="ex: 09123456789" id="cus_number"/>
+                Birthdate<input type="date" class="form-control" id="cus_birthdate" />
+                Address<input type="text" class="form-control" id="cus_address" />
             </div>
             <div class="col">
-                Email Address<input type="email" id="cus_email" class="form-control" placeholder="ex: juandelacruz@email.com " required/>
+                Phone Number<input type="number" class="form-control" placeholder="ex: 09123456789" id="cus_number" />
+                Email Address<input type="email" id="cus_email" class="form-control" placeholder="ex: juandelacruz@email.com " required />
                 Password<input type="password" id="cus_pass" name="cus_pass" class="form-control" />
                 Confirm Password<input type="password" id="cus_pass2" name="cuss_pass2" class="form-control" />
-                <br /><br /><br /><button class="btn btn-primary" style="margin-left:62%" id="btn_submit">Submit</button>
+                <br /><button class="btn btn-primary" style="margin-left:35%; margin-bottom:5%" id="btn_submit">Submit</button>
             </div>
         </div>
     </div>

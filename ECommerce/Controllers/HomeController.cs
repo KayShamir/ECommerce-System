@@ -544,6 +544,9 @@ namespace ECommerce.Controllers
 
             return Json(response, JsonRequestBehavior.AllowGet);
         }
-
+        public ActionResult Product_Details()
+        {
+            return View();
+        }
     }
 }

@@ -1,9 +1,9 @@
 ﻿$().ready(function () {
     $('.add_cart').click(function () {
-        var productId = $(this).data('product-id'); // Get the product ID from the button's data attribute
-        var quantity = $(this).closest('.card-footer').find('.quantity').val(); // Get the quantity from the input field
+        var productId = $(this).data('product-id'); 
+        var quantity = $(this).closest('.card-footer').find('.quantity').val();
 
-        var maxStock = parseInt($(this).closest('.card').find('.card-text').text().split(": ")[1].trim()); // Get maximum stock for the product
+        var maxStock = parseInt($(this).closest('.card').find('.card-text').text().split(": ")[1].trim()); 
 
         if (quantity > 0 && quantity <= maxStock) {
             $.ajax({
@@ -28,7 +28,6 @@
             }
         }
     });
-
     $(".btnDelete").click(function () {
         var row = $(this).closest('tr');
         var prodId = row.find('.prod_id').text().trim();
@@ -57,6 +56,9 @@
 
     $('#btnNo').click(function () {
         $('#deleteModal').modal('hide');
+    });
+    $('#btnLogout').click(function () {
+        window.location.href = '../Home/Login_Page';
     });
 });
 

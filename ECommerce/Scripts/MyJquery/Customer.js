@@ -17,12 +17,18 @@
             contentType: false,
             success: function (data) {
                 console.log(data);
-                alert('File uploaded successfully.');
+                alert('Successfully Created an Account!');
             },
             error: function () {
                 alert('Error uploading file.');
             }
         });
 
+    })
+    $('#btn_submit').click(function () {
+        window.location.href = '../Home/Login_Page';
+    })
+    $('#btnBack').click(function () {
+        window.location.href = '../Home/Login_Page';
     })
 })

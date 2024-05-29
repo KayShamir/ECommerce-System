@@ -35,4 +35,7 @@
     $('#btn_cancel').click(function () {
         $('#addModal').hide();
     });
+    $('#btnLogout').click(function () {
+        window.location.href = '../Home/Login_Page';
+    });
 })
