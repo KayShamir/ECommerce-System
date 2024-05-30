@@ -214,27 +214,108 @@
         .add-cart-icon {
             width: 100px;
         }
+
+        .btn-image {
+            border: none;
+            background: none;
+            padding: 0;
+        }
+
+        .offcanvas-start {
+            width: 300px;
+        }
     </style>
 </head>
-<!-- Customer Image Button -->
-<button class="btn btn-image float-end" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasCustomerInfo" aria-controls="offcanvasCustomerInfo">
-    <img src="~/customer_image.svg" alt="Customer Info" style="width: 40px; margin-top: -20%">
-</button>
-<!-- Customer Offcanvas -->
-<button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling" aria-controls="offcanvasScrolling">Enable body scrolling</button>
 
-<div class="offcanvas offcanvas-start" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="offcanvasScrolling" aria-labelledby="offcanvasScrollingLabel">
+@{
+    var customerId = Session["UserId"];
+    var customerName = "";
+    string customerImageUrl = Url.Content("~/Edit.svg"); // Default image URL
+    string connString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\kaysh\source\repos\ECommerce\ECommerce\App_Data\Database1.mdf;Integrated Security=True";
+
+    if (customerId != null)
+    {
+        using (var db = new SqlConnection(connString))
+        {
+            db.Open();
+            using (var cmd = db.CreateCommand())
+            {
+                cmd.CommandType = CommandType.Text;
+                cmd.CommandText = "SELECT cus_file, cus_firstname FROM Customer WHERE cus_id = @customerId";
+                cmd.Parameters.AddWithValue("@customerId", customerId);
+                using (var reader = cmd.ExecuteReader())
+                {
+                    if (reader.Read() && reader["cus_file"] != DBNull.Value)
+                    {
+                        customerImageUrl = Url.Content(reader["cus_file"].ToString());
+                        customerName = reader["cus_firstname"].ToString();
+                    }
+                }
+            }
+        }
+    }
+}
+<div class="d-flex align-items-center" style="width: 50%">
+    <!-- Customer Image Button -->
+    <button class="btn btn-image rounded-circle" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasCustomerInfo" aria-controls="offcanvasCustomerInfo" style="width: 70px; height: 70px;">
+        <img src="../Home/Image?filename=@HttpUtility.UrlEncode(customerImageUrl)" alt="Customer Info" style="width: 100%; height: 100%;" class="rounded-circle bg-black">
+    </button>
+    <h6 style="margin-left: 2%;">Welcome, @customerName!</h6>
+</div>
+
+
+<!-- Customer Offcanvas -->
+<div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasCustomerInfo" aria-labelledby="offcanvasCustomerInfoLabel">
     <div class="offcanvas-header">
-        <h5 class="offcanvas-title" id="offcanvasScrollingLabel">Offcanvas with body scrolling</h5>
+        <h5 class="offcanvas-title" id="offcanvasCustomerInfoLabel" style=" margin-left: 20px">Customer Information</h5>
         <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     </div>
     <div class="offcanvas-body">
-        <p>Try scrolling the rest of the page to see this option in action.</p>
+        @{
+            if (customerId != null)
+            {
+                using (var db = new SqlConnection(connString))
+                {
+                    db.Open();
+                    using (var cmd = db.CreateCommand())
+                    {
+                        cmd.CommandType = CommandType.Text;
+                        cmd.CommandText = "SELECT * FROM Customer WHERE cus_id = @customerId";
+                        cmd.Parameters.AddWithValue("@customerId", customerId);
+                        using (var reader = cmd.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                <span style="width: 70px; height: 70px;">
+                                    <img src="../Home/Image?filename=@HttpUtility.UrlEncode(customerImageUrl)" alt="Customer Info" style="width: 200px; height: 200px; margin-left: 60px" class="rounded-circle align-items-center">
+                                </span>
+                                <p style=" margin-left: 20px; margin-top: 20px"><strong>Name:</strong> @reader["cus_firstname"]  @reader["cus_lastname"]</p>
+                                <p style=" margin-left: 20px"><strong>Birthdate:</strong> @reader["cus_birthdate"]</p>
+                                <p style=" margin-left: 20px"><strong>Address:</strong> @reader["cus_address"]</p>
+                                <p style=" margin-left: 20px"><strong>Phone Number:</strong> @reader["cus_phonenumber"]</p>
+                                <p style=" margin-left: 20px"><strong>Email:</strong> @reader["cus_email"]</p>
+                            }
+                            else
+                            {
+                                <p>No customer information available.</p>
+                            }
+                        }
+                    }
+                }
+            }
+            else
+            {
+                <p>User not logged in.</p>
+            }
+        }
     </div>
 </div>
+
+
+
 <!-- Button with Image -->
 <button class="btn btn-image float-end" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">
-    <img src="~/Shopping Cart.svg" alt="Toggle right offcanvas" style="width: 40px; margin-top: -20%">
+    <img src="~/Shopping Cart.svg" alt="Toggle right offcanvas" style="width: 40px; margin-top: -250%">
 </button>
 <br />
 <br />
@@ -258,7 +339,7 @@
                         {
                             var productId = reader["PROD_ID"];
                             <div class="col-md-3 col-sm-6 mb-4">
-                                <div class="card card_button" style="height: 300px;">
+                                <div class="card card_button" style="height: 300px; margin-top: -19%">
                                     <div class="card-body card-clickable" style="height:50%; cursor: pointer;">
                                         <img class="card-img-top" src="../Home/Image?filename=@HttpUtility.UrlEncode(reader["PROD_FILE"] + "")" alt="@reader["PROD_NAME"]" style="height: 150px; object-fit: cover;">
                                         <h5 class="card-title d-flex justify-content-between">
@@ -394,21 +475,22 @@
                         {
                             cmd.CommandType = CommandType.Text;
                             cmd.CommandText = @"
-                                                                        SELECT
-                                                                            p.prod_id,
-                                                                            p.prod_name,
-                                                                            p.prod_file,
-                                                                            c.cart_qty,
-                                                                            p.prod_price,
-                                                                            c.cart_total
-                                                                        FROM
-                                                                            CART c
-                                                                        JOIN
-                                                                            PRODUCT p
-                                                                        ON
-                                                                            c.prod_id = p.prod_id
-                                                                        WHERE
-                                                                            c.cus_id = @cus_id";
+                                    SELECT
+                                        p.prod_id,
+                                        p.prod_name,
+                                        p.prod_file,
+                                        c.cart_qty,
+                                        p.prod_price,
+                                        c.cart_total
+                                    FROM
+                                        CART c
+                                    JOIN
+                                        PRODUCT p
+                                    ON
+                                        c.prod_id = p.prod_id
+                                    WHERE
+                                        c.cus_id = @cus_id";
+
                             cmd.Parameters.AddWithValue("@cus_id", cus_id);
                             using (var reader = cmd.ExecuteReader())
                             {
@@ -483,3 +565,4 @@
 <script src="~/Scripts/Jquery/jquery-3.7.1.min.js"></script>
 <script src="~/Scripts/MyJquery/Product_Link.js"></script>
 <script src="~/Scripts/MyJquery/Cart.js"></script>
+

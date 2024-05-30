@@ -32,4 +32,5 @@
     $('#btnBack').click(function () {
         window.location.href = '../Home/Login_Page';
     })
-})
+   
+});
