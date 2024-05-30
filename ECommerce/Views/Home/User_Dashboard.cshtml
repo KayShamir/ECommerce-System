@@ -224,326 +224,87 @@
         .offcanvas-start {
             width: 300px;
         }
+        .cart-color {
+            background-color: #f2e9e2;
+            border-radius:10px;
+        }
+
     </style>
 </head>
 
-@{
-    var customerId = Session["UserId"];
-    var customerName = "";
-    string customerImageUrl = Url.Content("~/Edit.svg"); // Default image URL
-    string connString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\kaysh\source\repos\ECommerce\ECommerce\App_Data\Database1.mdf;Integrated Security=True";
+<div style="margin-left: 5%; margin-right: 5%">
+    @{
+        var customerId = Session["UserId"];
+        var customerName = "";
+        string customerImageUrl = Url.Content("~/Edit.svg"); // Default image URL
+        string connString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\kaysh\source\repos\ECommerce\ECommerce\App_Data\Database1.mdf;Integrated Security=True";
 
-    if (customerId != null)
-    {
-        using (var db = new SqlConnection(connString))
+        if (customerId != null)
         {
-            db.Open();
-            using (var cmd = db.CreateCommand())
+            using (var db = new SqlConnection(connString))
             {
-                cmd.CommandType = CommandType.Text;
-                cmd.CommandText = "SELECT cus_file, cus_firstname FROM Customer WHERE cus_id = @customerId";
-                cmd.Parameters.AddWithValue("@customerId", customerId);
-                using (var reader = cmd.ExecuteReader())
+                db.Open();
+                using (var cmd = db.CreateCommand())
                 {
-                    if (reader.Read() && reader["cus_file"] != DBNull.Value)
+                    cmd.CommandType = CommandType.Text;
+                    cmd.CommandText = "SELECT cus_file, cus_firstname FROM Customer WHERE cus_id = @customerId";
+                    cmd.Parameters.AddWithValue("@customerId", customerId);
+                    using (var reader = cmd.ExecuteReader())
                     {
-                        customerImageUrl = Url.Content(reader["cus_file"].ToString());
-                        customerName = reader["cus_firstname"].ToString();
+                        if (reader.Read() && reader["cus_file"] != DBNull.Value)
+                        {
+                            customerImageUrl = Url.Content(reader["cus_file"].ToString());
+                            customerName = reader["cus_firstname"].ToString();
+                        }
                     }
                 }
             }
         }
     }
-}
-<div class="d-flex align-items-center" style="width: 50%">
-    <!-- Customer Image Button -->
-    <button class="btn btn-image rounded-circle" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasCustomerInfo" aria-controls="offcanvasCustomerInfo" style="width: 70px; height: 70px;">
-        <img src="../Home/Image?filename=@HttpUtility.UrlEncode(customerImageUrl)" alt="Customer Info" style="width: 80%; height: 80%;" class="rounded-circle bg-black">
-    </button>
-    <h6 style="margin-left: 2%;">Welcome, @customerName!</h6>
-</div>
-
-
-<!-- Customer Offcanvas -->
-<div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasCustomerInfo" aria-labelledby="offcanvasCustomerInfoLabel">
-    <div class="offcanvas-header">
-        <h5 class="offcanvas-title" id="offcanvasCustomerInfoLabel" style=" margin-left: 20px">Customer Information</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    <div class="d-flex align-items-center" style="width: 50%">
+        <!-- Customer Image Button -->
+        <button class="btn btn-image rounded-circle" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasCustomerInfo" aria-controls="offcanvasCustomerInfo" style="width: 70px; height: 70px;">
+            <img src="../Home/Image?filename=@HttpUtility.UrlEncode(customerImageUrl)" alt="Customer Info" style="width: 80%; height: 80%; margin-top:20%" class="rounded-circle bg-black">
+        </button>
+        <h6 style="margin-left: 2%; margin-top:2%">Welcome, @customerName!</h6>
     </div>
-    <div class="offcanvas-body">
-        @{
-            if (customerId != null)
-            {
-                using (var db = new SqlConnection(connString))
-                {
-                    db.Open();
-                    using (var cmd = db.CreateCommand())
-                    {
-                        cmd.CommandType = CommandType.Text;
-                        cmd.CommandText = "SELECT * FROM Customer WHERE cus_id = @customerId";
-                        cmd.Parameters.AddWithValue("@customerId", customerId);
-                        using (var reader = cmd.ExecuteReader())
-                        {
-                            if (reader.Read())
-                            {
-                                <span style="width: 60px; height: 60px;">
-                                    <img src="../Home/Image?filename=@HttpUtility.UrlEncode(customerImageUrl)" alt="Customer Info" style="width: 180px; height: 180px; margin-left: 60px" class="rounded-circle align-items-center">
-                                </span>
-                                <p style=" margin-left: 20px; margin-top: 20px"><strong>Name:</strong> @reader["cus_firstname"]  @reader["cus_lastname"]</p>
-                                <p style=" margin-left: 20px"><strong>Birthdate:</strong> @reader["cus_birthdate"]</p>
-                                <p style=" margin-left: 20px"><strong>Address:</strong> @reader["cus_address"]</p>
-                                <p style=" margin-left: 20px"><strong>Phone Number:</strong> @reader["cus_phonenumber"]</p>
-                                <p style=" margin-left: 20px"><strong>Email:</strong> @reader["cus_email"]</p>
-                            }
-                            else
-                            {
-                                <p>No customer information available.</p>
-                            }
-                        }
-                    }
-                }
-            }
-            else
-            {
-                <p>User not logged in.</p>
-            }
-        }
-        <span style="margin-left: 20px" class="mt-4">
-            <button type="button" class="btn btn-danger mt-5" id="btnLogout" style="width:30%">
-                <img src="~/🦆 icon _logout_ (1).svg" alt="Edit" style="width: 20px; height: 20px; margin-top: -5%; margin-right: 10px;" />Logout
-            </button>
-        </span>
-    </div>
-</div>
-
-<!-- Button with Image -->
-<button class="btn btn-image float-end" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">
-    <img src="~/Shopping Cart.svg" alt="Toggle right offcanvas" style="width: 40px; margin-top: -250%">
-</button>
-<br />
-<br />
-
-<br />
-@{
-    string conn_str = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\kaysh\source\repos\ECommerce\ECommerce\App_Data\Database1.mdf;Integrated Security=True";
-    using (var db = new SqlConnection(conn_str))
-    {
-        db.Open();
-        using (var cmd = db.CreateCommand())
-        {
-            cmd.CommandType = CommandType.Text;
-            cmd.CommandText = "SELECT * FROM PRODUCT";
-            using (var reader = cmd.ExecuteReader())
-            {
-                if (reader.HasRows)
-                {
-                    <div class="row">
-                        @while (reader.Read())
-                        {
-                            var productId = reader["PROD_ID"];
-                            <div class="col-md-3 col-sm-6 mb-4">
-                                <div class="card card_button" style="height: 300px; margin-top: -19%">
-                                    <div class="card-body card-clickable" style="height:50%; cursor: pointer;">
-                                        <img class="card-img-top" src="../Home/Image?filename=@HttpUtility.UrlEncode(reader["PROD_FILE"] + "")" alt="@reader["PROD_NAME"]" style="height: 150px; object-fit: cover;">
-                                        <h5 class="card-title d-flex justify-content-between">
-                                            <p class="product-name" style="font-size: small">
-                                                @reader["PROD_NAME"]
-                                                <span hidden>
-                                                    | @reader["PROD_PRICE"]| @reader["PROD_DESC"]| @reader["PROD_GENDER"]| @reader["PROD_COLOR"]| @reader["PROD_SIZE"]| @reader["PROD_MATERIAL"]| @reader["PROD_CATEGORY"]| @reader["PROD_STOCK"]
-                                                </span>
-                                            </p>
-                                            <span class="product-price" style="font-size: medium">₱@reader["PROD_PRICE"]</span>
-                                        </h5>
-                                        @if ((int)reader["PROD_STOCK"] == 0)
-                                        {
-                                            <p class="card-text">Stocks: <span style="color:red">Unavailable</span></p>
-                                        }
-                                        else
-                                        {
-                                            <p class="card-text float-start" style="font-size: small; margin-top: 10%">Stocks: @reader["PROD_STOCK"]</p>
-                                        }
-                                    </div>
-                                    <div class="card-footer" style="padding-top:1%; padding-bottom:1%">
-                                        <div class="number-input" style="width:115px">
-                                            <button class="quantity-button" onclick="this.parentNode.querySelector('input[type=number]').stepDown()">-</button>
-                                            <input class="quantity" min="0" name="quantity" value="0" type="number">
-                                            <button class="quantity-button" onclick="this.parentNode.querySelector('input[type=number]').stepUp()">+</button>
-                                        </div>
-                                        <span>
-                                            <button class="add_cart btn ml-2" style="padding-inline:5%" data-product-id="@reader["PROD_ID"]">
-                                                <img src="~/Group 104 (3).svg" style="width:94px" />
-                                            </button>
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-                        }
-
-                    </div>
-                }
-            }
-        }
-    }
-}
 
 
-<!-- Delete Product Modal -->
-<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5" id="exampleModalLabel">Delete Product</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                Are you sure you want to delete this product?
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" id="btnNo" data-bs-dismiss="modal">No</button>
-                <button type="button" class="btn btn-danger" data-bs-dismiss="modal" id="btnYes">Yes</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Modal -->
-<div class="modal fade" id="productModal" tabindex="-1" aria-labelledby="productModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="productModalLabel">Product Details</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <p><strong>Name:</strong> <span id="modalProdName"></span></p>
-                <p><strong>Price:</strong> ₱<span id="modalProdPrice"></span></p>
-                <p><strong>Stocks:</strong> <span id="modalProdStocks"></span></p>
-                <p><strong>Gender:</strong> <span id="modalProdGender"></span></p>
-                <p><strong>Color:</strong> <span id="modalProdColor"></span></p>
-                <p><strong>Size:</strong> <span id="modalProdSize"></span></p>
-                <p><strong>Material:</strong> <span id="modalProdMaterial"></span></p>
-                <p><strong>Category:</strong> <span id="modalProdCategory"></span></p>
-                <p><strong>Description:</strong> <span id="modalProdDesc"></span></p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Product Details Modal -->
-<div class="modal fade" id="productModal" tabindex="-1" aria-labelledby="productModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="productModalLabel">Product Details</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <p><strong>Name:</strong> <span id="modalProdName"></span></p>
-                <p><strong>Price:</strong> ₱<span id="modalProdPrice"></span></p>
-                <p><strong>Stocks:</strong> <span id="modalProdStocks"></span></p>
-                <p><strong>Gender:</strong> <span id="modalProdGender"></span></p>
-                <p><strong>Color:</strong> <span id="modalProdColor"></span></p>
-                <p><strong>Size:</strong> <span id="modalProdSize"></span></p>
-                <p><strong>Material:</strong> <span id="modalProdMaterial"></span></p>
-                <p><strong>Category:</strong> <span id="modalProdCategory"></span></p>
-                <p><strong>Description:</strong> <span id="modalProdDesc"></span></p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-
-<body>
-    <!-- Offcanvas -->
-    <div class="offcanvas offcanvas-end offcanvas-wider" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
+    <!-- Customer Offcanvas -->
+    <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasCustomerInfo" aria-labelledby="offcanvasCustomerInfoLabel">
         <div class="offcanvas-header">
-            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            <h5 class="offcanvas-title" id="offcanvasCustomerInfoLabel" style=" margin-left: 20px">Customer Information</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
         <div class="offcanvas-body">
             @{
-                var cus_id = Session["UserId"];
-                if (cus_id != null)
+                if (customerId != null)
                 {
-                    string conn_string = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\kaysh\source\repos\ECommerce\ECommerce\App_Data\Database1.mdf;Integrated Security=True";
-                    using (var db = new SqlConnection(conn_string))
+                    using (var db = new SqlConnection(connString))
                     {
                         db.Open();
                         using (var cmd = db.CreateCommand())
                         {
                             cmd.CommandType = CommandType.Text;
-                            cmd.CommandText = @"
-                                    SELECT
-                                        p.prod_id,
-                                        p.prod_name,
-                                        p.prod_file,
-                                        c.cart_qty,
-                                        p.prod_price,
-                                        c.cart_total
-                                    FROM
-                                        CART c
-                                    JOIN
-                                        PRODUCT p
-                                    ON
-                                        c.prod_id = p.prod_id
-                                    WHERE
-                                        c.cus_id = @cus_id";
-
-                            cmd.Parameters.AddWithValue("@cus_id", cus_id);
+                            cmd.CommandText = "SELECT * FROM Customer WHERE cus_id = @customerId";
+                            cmd.Parameters.AddWithValue("@customerId", customerId);
                             using (var reader = cmd.ExecuteReader())
                             {
-                                <table border="1" id="datatable" class="table table-group-divider">
-                                    <thead>
-                                        <tr>
-                                            <th width="20%"></th>
-                                            <th width="15%"></th>
-                                            <th width="10%"></th>
-                                            <th width="17%"></th>
-                                            <th width="5%"></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @while (reader.Read())
-                                        {
-                                            var prodId = reader["prod_id"].ToString();
-                                            var prodName = reader["prod_name"].ToString();
-                                            var prodImage = reader["prod_file"].ToString();
-                                            var cartCount = reader["cart_qty"].ToString();
-                                            var totalPrice = reader["cart_total"].ToString();
-                                            var unitPrice = (double.Parse(totalPrice) / int.Parse(cartCount)).ToString("F2");
-
-                                            <tr class="items">
-                                                <td hidden class="prod_id">@prodId</td>
-                                                <td style="text-align: center">
-                                                    <img src="../Home/Image?filename=@HttpUtility.UrlEncode(prodImage)" width="50%" />
-                                                </td>
-                                                <td class="prod-id align-content-center">@prodName</td>
-                                                <td class="align-content-center">
-                                                    <span class="align-content-center" id="price-@prodId" data-unit-price="@unitPrice">@totalPrice</span>
-                                                </td>
-                                                <td class="align-content-center">
-                                                    <div class="cart_qty" style="width:67%">
-                                                        <button type="button" class="qty-btn qty-btn-decrement" onclick="decrementQuantity('@prodId')">-</button>
-                                                        <input type="text" id="qty-@prodId" value="@cartCount" readonly class="qty-input" />
-                                                        <button type="button" class="qty-btn qty-btn-increment" onclick="incrementQuantity('@prodId')">+</button>
-                                                    </div>
-                                                </td>
-                                                <td class="align-content-center">
-                                                    <span>
-                                                        <button type="button" name="btn_delete" class="btn btn-danger btnDelete" id="btnDelete" data-bs-toggle="modal" data-bs-target="#deleteModal">
-                                                            <img src="~/Delete.svg" alt="Edit" style="width: 20px; height: 20px; margin-top: -25%; margin-left:3%" class="ml-4" />
-                                                        </button>
-                                                    </span>
-                                                </td>
-                                            </tr>
-                                        }
-                                    </tbody>
-                                </table>
+                                if (reader.Read())
+                                {
+                                    <span style="width: 60px; height: 60px;">
+                                        <img src="../Home/Image?filename=@HttpUtility.UrlEncode(customerImageUrl)" alt="Customer Info" style="width: 180px; height: 180px; margin-left: 60px" class="rounded-circle align-items-center">
+                                    </span>
+                                    <p style=" margin-left: 20px; margin-top: 20px"><strong>Name:</strong> @reader["cus_firstname"]  @reader["cus_lastname"]</p>
+                                    <p style=" margin-left: 20px"><strong>Birthdate:</strong> @reader["cus_birthdate"]</p>
+                                    <p style=" margin-left: 20px"><strong>Address:</strong> @reader["cus_address"]</p>
+                                    <p style=" margin-left: 20px"><strong>Phone Number:</strong> @reader["cus_phonenumber"]</p>
+                                    <p style=" margin-left: 20px"><strong>Email:</strong> @reader["cus_email"]</p>
+                                }
+                                else
+                                {
+                                    <p>No customer information available.</p>
+                                }
                             }
                         }
                     }
@@ -553,9 +314,255 @@
                     <p>User not logged in.</p>
                 }
             }
+            <span style="margin-left: 20px" class="mt-4">
+                <button type="button" class="btn btn-danger mt-5" id="btnLogout" style="width:30%">
+                    <img src="~/🦆 icon _logout_ (1).svg" alt="Edit" style="width: 20px; height: 20px; margin-top: -5%; margin-right: 10px;" />Logout
+                </button>
+            </span>
         </div>
     </div>
-</body>
+
+    <!-- Button with Image -->
+    <button class="btn btn-image float-end" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">
+        <img src="~/Shopping Cart.svg" alt="Toggle right offcanvas" style="width: 40px; margin-top: -250%">
+    </button>
+    <br />
+    <br />
+
+    <br />
+    @{
+        string conn_str = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\kaysh\source\repos\ECommerce\ECommerce\App_Data\Database1.mdf;Integrated Security=True";
+        using (var db = new SqlConnection(conn_str))
+        {
+            db.Open();
+            using (var cmd = db.CreateCommand())
+            {
+                cmd.CommandType = CommandType.Text;
+                cmd.CommandText = "SELECT * FROM PRODUCT";
+                using (var reader = cmd.ExecuteReader())
+                {
+                    if (reader.HasRows)
+                    {
+                        <div class="row">
+                            @while (reader.Read())
+                            {
+                                var productId = reader["PROD_ID"];
+                                <div class="col-md-3 col-sm-6 mb-4">
+                                    <div class="card card_button cart-color" style="height: 300px; margin-top: -19%">
+                                        <div class="card-body card-clickable cart-color" style="height:50%; cursor: pointer;">
+                                            <img class="card-img-top" src="../Home/Image?filename=@HttpUtility.UrlEncode(reader["PROD_FILE"] + "")" alt="@reader["PROD_NAME"]" style="height: 150px; object-fit: cover;">
+                                            <h5 class="card-title d-flex justify-content-between">
+                                                <p class="product-name" style="font-size: small">
+                                                    @reader["PROD_NAME"]
+                                                    <span hidden>
+                                                        | @reader["PROD_PRICE"]| @reader["PROD_DESC"]| @reader["PROD_GENDER"]| @reader["PROD_COLOR"]| @reader["PROD_SIZE"]| @reader["PROD_MATERIAL"]| @reader["PROD_CATEGORY"]| @reader["PROD_STOCK"]
+                                                    </span>
+                                                </p>
+                                                <span class="product-price" style="font-size: medium">₱@reader["PROD_PRICE"]</span>
+                                            </h5>
+                                            @if ((int)reader["PROD_STOCK"] == 0)
+                                            {
+                                                <p class="card-text">Stocks: <span style="color:red">Unavailable</span></p>
+                                            }
+                                            else
+                                            {
+                                                <p class="card-text float-start" style="font-size: small; margin-top: 10%">Stocks: @reader["PROD_STOCK"]</p>
+                                            }
+                                        </div>
+                                        <div class="card-footer" style="padding-top:1%; padding-bottom:1%">
+                                            <div class="number-input" style="width:115px">
+                                                <button class="quantity-button" onclick="this.parentNode.querySelector('input[type=number]').stepDown()">-</button>
+                                                <input class="quantity" min="0" name="quantity" value="0" type="number">
+                                                <button class="quantity-button" onclick="this.parentNode.querySelector('input[type=number]').stepUp()">+</button>
+                                            </div>
+                                            <span>
+                                                <button class="add_cart btn ml-2" style="padding-inline:5%" data-product-id="@reader["PROD_ID"]">
+                                                    <img src="~/Group 104 (3).svg" style="width:94px" />
+                                                </button>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+
+                        </div>
+                    }
+                }
+            }
+        }
+    }
+
+
+    <!-- Delete Product Modal -->
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Delete Product</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to delete this product?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="btnNo" data-bs-dismiss="modal">No</button>
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal" id="btnYes">Yes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="productModal" tabindex="-1" aria-labelledby="productModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="productModalLabel">Product Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p><strong>Name:</strong> <span id="modalProdName"></span></p>
+                    <p><strong>Price:</strong> ₱<span id="modalProdPrice"></span></p>
+                    <p><strong>Stocks:</strong> <span id="modalProdStocks"></span></p>
+                    <p><strong>Gender:</strong> <span id="modalProdGender"></span></p>
+                    <p><strong>Color:</strong> <span id="modalProdColor"></span></p>
+                    <p><strong>Size:</strong> <span id="modalProdSize"></span></p>
+                    <p><strong>Material:</strong> <span id="modalProdMaterial"></span></p>
+                    <p><strong>Category:</strong> <span id="modalProdCategory"></span></p>
+                    <p><strong>Description:</strong> <span id="modalProdDesc"></span></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Product Details Modal -->
+    <div class="modal fade" id="productModal" tabindex="-1" aria-labelledby="productModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="productModalLabel">Product Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p><strong>Name:</strong> <span id="modalProdName"></span></p>
+                    <p><strong>Price:</strong> ₱<span id="modalProdPrice"></span></p>
+                    <p><strong>Stocks:</strong> <span id="modalProdStocks"></span></p>
+                    <p><strong>Gender:</strong> <span id="modalProdGender"></span></p>
+                    <p><strong>Color:</strong> <span id="modalProdColor"></span></p>
+                    <p><strong>Size:</strong> <span id="modalProdSize"></span></p>
+                    <p><strong>Material:</strong> <span id="modalProdMaterial"></span></p>
+                    <p><strong>Category:</strong> <span id="modalProdCategory"></span></p>
+                    <p><strong>Description:</strong> <span id="modalProdDesc"></span></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <body>
+        <!-- Offcanvas -->
+        <div class="offcanvas offcanvas-end offcanvas-wider" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
+            <div class="offcanvas-header">
+                <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            </div>
+            <div class="offcanvas-body">
+                @{
+                    var cus_id = Session["UserId"];
+                    if (cus_id != null)
+                    {
+                        string conn_string = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\kaysh\source\repos\ECommerce\ECommerce\App_Data\Database1.mdf;Integrated Security=True";
+                        using (var db = new SqlConnection(conn_string))
+                        {
+                            db.Open();
+                            using (var cmd = db.CreateCommand())
+                            {
+                                cmd.CommandType = CommandType.Text;
+                                cmd.CommandText = @"
+                                            SELECT
+                                                p.prod_id,
+                                                p.prod_name,
+                                                p.prod_file,
+                                                c.cart_qty,
+                                                p.prod_price,
+                                                c.cart_total
+                                            FROM
+                                                CART c
+                                            JOIN
+                                                PRODUCT p
+                                            ON
+                                                c.prod_id = p.prod_id
+                                            WHERE
+                                                c.cus_id = @cus_id";
+
+                                cmd.Parameters.AddWithValue("@cus_id", cus_id);
+                                using (var reader = cmd.ExecuteReader())
+                                {
+                                    <table border="1" id="datatable" class="table table-group-divider">
+                                        <thead>
+                                            <tr>
+                                                <th width="20%"></th>
+                                                <th width="15%"></th>
+                                                <th width="10%"></th>
+                                                <th width="17%"></th>
+                                                <th width="5%"></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @while (reader.Read())
+                                            {
+                                                var prodId = reader["prod_id"].ToString();
+                                                var prodName = reader["prod_name"].ToString();
+                                                var prodImage = reader["prod_file"].ToString();
+                                                var cartCount = reader["cart_qty"].ToString();
+                                                var totalPrice = reader["cart_total"].ToString();
+                                                var unitPrice = (double.Parse(totalPrice) / int.Parse(cartCount)).ToString("F2");
+
+                                                <tr class="items">
+                                                    <td hidden class="prod_id">@prodId</td>
+                                                    <td style="text-align: center">
+                                                        <img src="../Home/Image?filename=@HttpUtility.UrlEncode(prodImage)" width="50%" />
+                                                    </td>
+                                                    <td class="prod-id align-content-center">@prodName</td>
+                                                    <td class="align-content-center">
+                                                        <span class="align-content-center" id="price-@prodId" data-unit-price="@unitPrice">@totalPrice</span>
+                                                    </td>
+                                                    <td class="align-content-center">
+                                                        <div class="cart_qty" style="width:67%">
+                                                            <button type="button" class="qty-btn qty-btn-decrement" onclick="decrementQuantity('@prodId')">-</button>
+                                                            <input type="text" id="qty-@prodId" value="@cartCount" readonly class="qty-input" />
+                                                            <button type="button" class="qty-btn qty-btn-increment" onclick="incrementQuantity('@prodId')">+</button>
+                                                        </div>
+                                                    </td>
+                                                    <td class="align-content-center">
+                                                        <span>
+                                                            <button type="button" name="btn_delete" class="btn btn-danger btnDelete" id="btnDelete" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                                                                <img src="~/Delete.svg" alt="Edit" style="width: 20px; height: 20px; margin-top: -25%; margin-left:3%" class="ml-4" />
+                                                            </button>
+                                                        </span>
+                                                    </td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        <p>User not logged in.</p>
+                    }
+                }
+            </div>
+        </div>
+    </body>
+</div>
 
 <script src="~/Scripts/Jquery/jquery-3.7.1.min.js"></script>
 <script src="~/Scripts/MyJquery/Product_Link.js"></script>
