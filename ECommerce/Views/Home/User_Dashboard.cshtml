@@ -258,7 +258,7 @@
 <div class="d-flex align-items-center" style="width: 50%">
     <!-- Customer Image Button -->
     <button class="btn btn-image rounded-circle" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasCustomerInfo" aria-controls="offcanvasCustomerInfo" style="width: 70px; height: 70px;">
-        <img src="../Home/Image?filename=@HttpUtility.UrlEncode(customerImageUrl)" alt="Customer Info" style="width: 100%; height: 100%;" class="rounded-circle bg-black">
+        <img src="../Home/Image?filename=@HttpUtility.UrlEncode(customerImageUrl)" alt="Customer Info" style="width: 80%; height: 80%;" class="rounded-circle bg-black">
     </button>
     <h6 style="margin-left: 2%;">Welcome, @customerName!</h6>
 </div>
@@ -286,8 +286,8 @@
                         {
                             if (reader.Read())
                             {
-                                <span style="width: 70px; height: 70px;">
-                                    <img src="../Home/Image?filename=@HttpUtility.UrlEncode(customerImageUrl)" alt="Customer Info" style="width: 200px; height: 200px; margin-left: 60px" class="rounded-circle align-items-center">
+                                <span style="width: 60px; height: 60px;">
+                                    <img src="../Home/Image?filename=@HttpUtility.UrlEncode(customerImageUrl)" alt="Customer Info" style="width: 180px; height: 180px; margin-left: 60px" class="rounded-circle align-items-center">
                                 </span>
                                 <p style=" margin-left: 20px; margin-top: 20px"><strong>Name:</strong> @reader["cus_firstname"]  @reader["cus_lastname"]</p>
                                 <p style=" margin-left: 20px"><strong>Birthdate:</strong> @reader["cus_birthdate"]</p>
@@ -308,10 +308,13 @@
                 <p>User not logged in.</p>
             }
         }
+        <span style="margin-left: 20px" class="mt-4">
+            <button type="button" class="btn btn-danger mt-5" id="btnLogout" style="width:30%">
+                <img src="~/🦆 icon _logout_ (1).svg" alt="Edit" style="width: 20px; height: 20px; margin-top: -5%; margin-right: 10px;" />Logout
+            </button>
+        </span>
     </div>
 </div>
-
-
 
 <!-- Button with Image -->
 <button class="btn btn-image float-end" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">
@@ -553,14 +556,6 @@
         </div>
     </div>
 </body>
-<span>
-    <button type="button" class="btn btn-danger float-end" id="btnLogout" style="width:11%">
-        <img src="~/🦆 icon _logout_ (1).svg" alt="Edit" style="width: 20px; height: 20px; margin-top: -5%; margin-right: 10px" />Logout
-    </button>
-</span>
-<br />
-<br />
-<br />
 
 <script src="~/Scripts/Jquery/jquery-3.7.1.min.js"></script>
 <script src="~/Scripts/MyJquery/Product_Link.js"></script>
