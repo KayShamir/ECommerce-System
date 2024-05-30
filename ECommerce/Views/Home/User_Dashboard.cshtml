@@ -100,7 +100,6 @@
             .number-input input[type=number]::-webkit-outer-spin-button {
                 -webkit-appearance: none;
             }
-
         /* Cart Quantity Styles */
         .cart_qty {
             display: flex;
@@ -217,6 +216,22 @@
         }
     </style>
 </head>
+<!-- Customer Image Button -->
+<button class="btn btn-image float-end" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasCustomerInfo" aria-controls="offcanvasCustomerInfo">
+    <img src="~/customer_image.svg" alt="Customer Info" style="width: 40px; margin-top: -20%">
+</button>
+<!-- Customer Offcanvas -->
+<button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling" aria-controls="offcanvasScrolling">Enable body scrolling</button>
+
+<div class="offcanvas offcanvas-start" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="offcanvasScrolling" aria-labelledby="offcanvasScrollingLabel">
+    <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="offcanvasScrollingLabel">Offcanvas with body scrolling</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+        <p>Try scrolling the rest of the page to see this option in action.</p>
+    </div>
+</div>
 <!-- Button with Image -->
 <button class="btn btn-image float-end" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">
     <img src="~/Shopping Cart.svg" alt="Toggle right offcanvas" style="width: 40px; margin-top: -20%">
@@ -238,49 +253,49 @@
             {
                 if (reader.HasRows)
                 {
-    <div class="row">
-        @while (reader.Read())
-        {
-            var productId = reader["PROD_ID"];
-            <div class="col-md-3 col-sm-6 mb-4">
-                <div class="card card_button" style="height: 300px;">
-                    <div class="card-body card-clickable" style="height:50%; cursor: pointer;">
-                        <img class="card-img-top" src="../Home/Image?filename=@HttpUtility.UrlEncode(reader["PROD_FILE"] + "")" alt="@reader["PROD_NAME"]" style="height: 150px; object-fit: cover;">
-                        <h5 class="card-title d-flex justify-content-between">
-                            <p class="product-name" style="font-size: small">
-                                @reader["PROD_NAME"]
-                                <span hidden>
-                                    | @reader["PROD_PRICE"]| @reader["PROD_DESC"]| @reader["PROD_GENDER"]| @reader["PROD_COLOR"]| @reader["PROD_SIZE"]| @reader["PROD_MATERIAL"]| @reader["PROD_CATEGORY"]| @reader["PROD_STOCK"]
-                                </span>
-                            </p>
-                            <span class="product-price" style="font-size: medium">₱@reader["PROD_PRICE"]</span>
-                        </h5>
-                        @if ((int)reader["PROD_STOCK"] == 0)
+                    <div class="row">
+                        @while (reader.Read())
                         {
-                            <p class="card-text">Stocks: <span style="color:red">Unavailable</span></p>
+                            var productId = reader["PROD_ID"];
+                            <div class="col-md-3 col-sm-6 mb-4">
+                                <div class="card card_button" style="height: 300px;">
+                                    <div class="card-body card-clickable" style="height:50%; cursor: pointer;">
+                                        <img class="card-img-top" src="../Home/Image?filename=@HttpUtility.UrlEncode(reader["PROD_FILE"] + "")" alt="@reader["PROD_NAME"]" style="height: 150px; object-fit: cover;">
+                                        <h5 class="card-title d-flex justify-content-between">
+                                            <p class="product-name" style="font-size: small">
+                                                @reader["PROD_NAME"]
+                                                <span hidden>
+                                                    | @reader["PROD_PRICE"]| @reader["PROD_DESC"]| @reader["PROD_GENDER"]| @reader["PROD_COLOR"]| @reader["PROD_SIZE"]| @reader["PROD_MATERIAL"]| @reader["PROD_CATEGORY"]| @reader["PROD_STOCK"]
+                                                </span>
+                                            </p>
+                                            <span class="product-price" style="font-size: medium">₱@reader["PROD_PRICE"]</span>
+                                        </h5>
+                                        @if ((int)reader["PROD_STOCK"] == 0)
+                                        {
+                                            <p class="card-text">Stocks: <span style="color:red">Unavailable</span></p>
+                                        }
+                                        else
+                                        {
+                                            <p class="card-text float-start" style="font-size: small; margin-top: 10%">Stocks: @reader["PROD_STOCK"]</p>
+                                        }
+                                    </div>
+                                    <div class="card-footer" style="padding-top:1%; padding-bottom:1%">
+                                        <div class="number-input" style="width:115px">
+                                            <button class="quantity-button" onclick="this.parentNode.querySelector('input[type=number]').stepDown()">-</button>
+                                            <input class="quantity" min="0" name="quantity" value="0" type="number">
+                                            <button class="quantity-button" onclick="this.parentNode.querySelector('input[type=number]').stepUp()">+</button>
+                                        </div>
+                                        <span>
+                                            <button class="add_cart btn ml-2" style="padding-inline:5%" data-product-id="@reader["PROD_ID"]">
+                                                <img src="~/Group 104 (3).svg" style="width:94px" />
+                                            </button>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
                         }
-                        else
-                        {
-                            <p class="card-text float-start" style="font-size: small; margin-top: 10%">Stocks: @reader["PROD_STOCK"]</p>
-                        }
-                    </div>
-                    <div class="card-footer" style="padding-top:1%; padding-bottom:1%">
-                        <div class="number-input" style="width:115px">
-                            <button class="quantity-button" onclick="this.parentNode.querySelector('input[type=number]').stepDown()">-</button>
-                            <input class="quantity" min="0" name="quantity" value="0" type="number">
-                            <button class="quantity-button" onclick="this.parentNode.querySelector('input[type=number]').stepUp()">+</button>
-                        </div>
-                        <span>
-                            <button class="add_cart btn ml-2" style="padding-inline:5%" data-product-id="@reader["PROD_ID"]">
-                                <img src="~/Group 104 (3).svg" style="width:94px" />
-                            </button>
-                        </span>
-                    </div>
-                </div>
-            </div>
-        }
 
-    </div>
+                    </div>
                 }
             }
         }
@@ -379,21 +394,21 @@
                         {
                             cmd.CommandType = CommandType.Text;
                             cmd.CommandText = @"
-                                                            SELECT
-                                                                p.prod_id,
-                                                                p.prod_name,
-                                                                p.prod_file,
-                                                                c.cart_qty,
-                                                                p.prod_price,
-                                                                c.cart_total
-                                                            FROM
-                                                                CART c
-                                                            JOIN
-                                                                PRODUCT p
-                                                            ON
-                                                                c.prod_id = p.prod_id
-                                                            WHERE
-                                                                c.cus_id = @cus_id";
+                                                                        SELECT
+                                                                            p.prod_id,
+                                                                            p.prod_name,
+                                                                            p.prod_file,
+                                                                            c.cart_qty,
+                                                                            p.prod_price,
+                                                                            c.cart_total
+                                                                        FROM
+                                                                            CART c
+                                                                        JOIN
+                                                                            PRODUCT p
+                                                                        ON
+                                                                            c.prod_id = p.prod_id
+                                                                        WHERE
+                                                                            c.cus_id = @cus_id";
                             cmd.Parameters.AddWithValue("@cus_id", cus_id);
                             using (var reader = cmd.ExecuteReader())
                             {

@@ -8,6 +8,7 @@
         data.append('cus_number', $('#cus_number').val());
         data.append('cus_email', $('#cus_email').val());
         data.append('cus_pass', $('#cus_pass2').val());
+        data.append('cus_file', $('#cus_file')[0].files[0]);
 
         $.ajax({
             url: '../Home/postCustomer',
