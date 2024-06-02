@@ -17,9 +17,15 @@
             background-color: #28a745 !important;
             opacity: 1 !important;
         }
+
             #toast-container > .toast-success .toast-message {
                 color: #ffffff !important;
             }
+
+        .font-poppins {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+        }
     </style>
 </head>
 <body>
@@ -36,7 +42,7 @@
             "onclick": null,
             "showDuration": "300",
             "hideDuration": "1000",
-            "timeOut": "3000", 
+            "timeOut": "3000",
             "extendedTimeOut": "1000",
             "showEasing": "swing",
             "hideEasing": "linear",
@@ -46,16 +52,24 @@
     </script>
 </body>
 
-<div style="margin-left:5%; margin-right:5%">
-    <h3 style="margin-top:10px">Welcome, Admin!</h3>
-
-    <div class="float-end" style="margin-bottom:1%">
-        Want to add product?&nbsp;
+<div style="margin-left:5%; margin-right:5%; margin-top: 1%">
+    <div style="display: flex; align-items: center;">
+        <h3 style="margin-top:10px; margin-right: 20px;" class="font-poppins">Welcome, Admin!</h3>
+    </div>
+    <div class="float-start" style=" margin-top: 10px; margin-bottom: 1%">
         <span>
             <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addModal">
                 <img src="~/Group 61.svg" style="width: 30px; height: 30px; margin-top: 5%" />
             </button>
         </span>
+        &nbsp;Want to add product?
+        <button type="button" class="btn btn-product btn-secondary" id="btn_product_info" style="margin-left:150px">Product Information</button>
+        <button type="button" class="btn btn-user btn-secondary" id="btn_user_info">User Information</button>
+    </div>
+    <div style="margin-bottom: 1%; margin-top: 10px">
+        <button type="button" class="btn btn-danger float-end" id="btnLogout" style="width:11%">
+            <img src="~/🦆 icon _logout_ (1).svg" alt="Edit" style="width: 20px; height: 20px; margin-top: -5%; margin-right: 10px" />Logout
+        </button>
     </div>
 
 
@@ -279,87 +293,152 @@
         </div>
     </div>
 
-    @{
-        string conn_str = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\kaysh\source\repos\ECommerce\ECommerce\App_Data\Database1.mdf;Integrated Security=True";
-        using (var db = new SqlConnection(conn_str))
-        {
-            db.Open();
-            using (var cmd = db.CreateCommand())
+    <div id="prod_info">
+        @{
+            string conn_str = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\kaysh\source\repos\ECommerce\ECommerce\App_Data\Database1.mdf;Integrated Security=True";
+            using (var db = new SqlConnection(conn_str))
             {
-                cmd.CommandType = CommandType.Text;
-                cmd.CommandText = "SELECT * FROM PRODUCT";
-                using (var reader = cmd.ExecuteReader())
+                db.Open();
+                using (var cmd = db.CreateCommand())
                 {
-                    if (reader.HasRows)
+                    cmd.CommandType = CommandType.Text;
+                    cmd.CommandText = "SELECT * FROM PRODUCT";
+                    using (var reader = cmd.ExecuteReader())
                     {
-                        <table class="table table-striped">
-                            <thead class="bg-secondary text-white">
-                                <tr>
-                                    <th width="5%" style="text-align:center">ID</th>
-                                    <th width="10%">NAME</th>
-                                    <th width="10%">IMAGE</th>
-                                    <th width="8%">STOCKS</th>
-                                    <th width="10%">PRICE</th>
-                                    <th width="12%">GENDER</th>
-                                    <th width="7%">COLOR</th>
-                                    <th width="5%">SIZE</th>
-                                    <th width="10%">MATERIAL</th>
-                                    <th width="10%">CATEGORY</th>
-                                    <th width="30%" style="max-width: 30%; word-wrap: break-word;">DESCRIPTION</th>
-                                    <th width="15%"></th>
-                                    <th width="15%"></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @while (reader.Read())
-                                {
-                                    <tr class="items">
-                                        <td style="text-align:center" class="prod_id">@reader["PROD_ID"]</td>
-                                        <td style="font-size:smaller">@reader["PROD_NAME"]</td>
-                                        <td class="img" style="text-align: center;">
-                                            <center>
-                                                <img src="../Home/Image?filename=@HttpUtility.UrlEncode(reader["PROD_FILE"] + "")" style="max-width: 100px; max-height: 100px;" />
-                                            </center>
-                                        </td>
-                                        <td>@reader["PROD_STOCK"]</td>
-                                        <td>₱@reader["PROD_PRICE"]</td>
-                                        <td>@reader["PROD_GENDER"]</td>
-                                        <td>@reader["PROD_COLOR"]</td>
-                                        <td>@reader["PROD_SIZE"]</td>
-                                        <td style="font-size:small">@reader["PROD_MATERIAL"]</td>
-                                        <td style="font-size:small">@reader["PROD_CATEGORY"]</td>
-                                        <td style="font-size:smaller; max-width: 18%; word-wrap: break-word;">@reader["PROD_DESC"]</td>
-                                        <td>
-                                            <span>
-                                                <button type="button" name="edit_btn" class="btn btn-primary btnEdit" id="btnEdit" data-bs-toggle="modal" data-bs-target="#updateModal">
-                                                    <img src="~/Edit.svg" alt="Edit" style="width: 20px; height: 20px; margin-top: -25%" />
-                                                </button>
-                                            </span>
-                                        </td>
-                                        <td>
-                                            <span>
-                                                <button type="button" name="delete_btn" class="btn btn-danger btnDelete" id="btnDelete" data-bs-toggle="modal" data-bs-target="#deleteModal">
-                                                    <img src="~/Delete.svg" alt="Edit" style="width: 20px; height: 20px; margin-top: -25%" />
-                                                </button>
-                                            </span>
-                                        </td>
+                        if (reader.HasRows)
+                        {
+                            <table class="table table-striped">
+                                <thead class="bg-secondary text-white">
+                                    <tr>
+                                        <th width="5%" style="text-align:center">ID</th>
+                                        <th width="10%">NAME</th>
+                                        <th width="10%">IMAGE</th>
+                                        <th width="8%">STOCKS</th>
+                                        <th width="10%">PRICE</th>
+                                        <th width="12%">GENDER</th>
+                                        <th width="7%">COLOR</th>
+                                        <th width="5%">SIZE</th>
+                                        <th width="10%">MATERIAL</th>
+                                        <th width="10%">CATEGORY</th>
+                                        <th width="30%" style="max-width: 30%; word-wrap: break-word;">DESCRIPTION</th>
+                                        <th width="15%"></th>
+                                        <th width="15%"></th>
                                     </tr>
-                                }
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody>
+                                    @while (reader.Read())
+                                    {
+                                        <tr class="items">
+                                            <td style="text-align:center" class="prod_id">@reader["PROD_ID"]</td>
+                                            <td style="font-size:smaller">@reader["PROD_NAME"]</td>
+                                            <td class="img" style="text-align: center;">
+                                                <center>
+                                                    <img src="../Home/Image?filename=@HttpUtility.UrlEncode(reader["PROD_FILE"] + "")" style="max-width: 100px; max-height: 100px;" />
+                                                </center>
+                                            </td>
+                                            <td>@reader["PROD_STOCK"]</td>
+                                            <td>₱@reader["PROD_PRICE"]</td>
+                                            <td>@reader["PROD_GENDER"]</td>
+                                            <td>@reader["PROD_COLOR"]</td>
+                                            <td>@reader["PROD_SIZE"]</td>
+                                            <td style="font-size:small">@reader["PROD_MATERIAL"]</td>
+                                            <td style="font-size:small">@reader["PROD_CATEGORY"]</td>
+                                            <td style="font-size:smaller; max-width: 18%; word-wrap: break-word;">@reader["PROD_DESC"]</td>
+                                            <td>
+                                                <span>
+                                                    <button type="button" name="edit_btn" class="btn btn-primary btnEdit" id="btnEdit" data-bs-toggle="modal" data-bs-target="#updateModal">
+                                                        <img src="~/Edit.svg" alt="Edit" style="width: 20px; height: 20px; margin-top: -25%" />
+                                                    </button>
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <span>
+                                                    <button type="button" name="delete_btn" class="btn btn-danger btnDelete" id="btnDelete" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                                                        <img src="~/Delete.svg" alt="Edit" style="width: 20px; height: 20px; margin-top: -25%" />
+                                                    </button>
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
 
+                        }
                     }
                 }
             }
         }
-    }
-    <span>
-        <button type="button" class="btn btn-danger float-end" id="btnLogout" style="width:11%">
-            <img src="~/🦆 icon _logout_ (1).svg" alt="Edit" style="width: 20px; height: 20px; margin-top: -5%; margin-right: 10px" />Logout
-        </button>
-    </span><br /><br /><br />
+    </div>
+    <div id="user_info" style="display:none;">
+        @{
+            string conn = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\kaysh\source\repos\ECommerce\ECommerce\App_Data\Database1.mdf;Integrated Security=True";
+            using (var db = new SqlConnection(conn))
+            {
+                db.Open();
+                using (var cmd = db.CreateCommand())
+                {
+                    cmd.CommandType = CommandType.Text;
+                    cmd.CommandText = "SELECT * FROM CUSTOMER";
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        if (reader.HasRows)
+                        {
+                            <table class="table table-striped">
+                                <thead class="bg-secondary text-white">
+                                    <tr>
+                                        <th width="5%" style="text-align:center">ID</th>
+                                        <th width="10%">LAST NAME</th>
+                                        <th width="10%">FIRST NAME</th>
+                                        <th width="8%">BIRTHDATE</th>
+                                        <th width="10%">ADDRESS</th>
+                                        <th width="12%">PHONE NUMBER</th>
+                                        <th width="7%">EMAIL</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @while (reader.Read())
+                                    {
+                                        <tr class="items">
+                                            <td style="text-align:center" class="prod_id">@reader["CUS_ID"]</td>
+                                            <td style="font-size:smaller">@reader["CUS_LASTNAME"]</td>
+                                            <td>@reader["CUS_FIRSTNAME"]</td>
+                                            <td>@reader["CUS_BIRTHDATE"]</td>
+                                            <td>@reader["CUS_ADDRESS"]</td>
+                                            <td>@reader["CUS_PHONENUMBER"]</td>
+                                            <td>@reader["CUS_EMAIL"]</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
 
+                        }
+                    }
+                }
+            }
+        }
+    </div>
+    <span>
+    </span><br /><br /><br />
 </div>
+<script>
+    document.addEventListener('DOMContentLoaded', (event) => {
+        const prodInfo = document.getElementById('prod_info');
+        const userInfo = document.getElementById('user_info');
+        const btnProductInfo = document.getElementById('btn_product_info');
+        const btnUserInfo = document.getElementById('btn_user_info');
+
+        btnProductInfo.addEventListener('click', () => {
+            prodInfo.style.display = 'block';
+            userInfo.style.display = 'none';
+        });
+
+        btnUserInfo.addEventListener('click', () => {
+            prodInfo.style.display = 'none';
+            userInfo.style.display = 'block';
+        });
+    });
+</script>
+
 
 <script src="~/Scripts/Jquery/jquery-3.7.1.min.js"></script>
 <script src="~/Scripts/MyJquery/Product.js"></script>

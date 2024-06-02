@@ -162,7 +162,9 @@
     <Content Include="header.jpg" />
     <Content Include="image_2024-05-31_031106456-ai-brush-removebg-hc1hd20i.png" />
     <Content Include="Loregas, Kay Shamir - Copy.jpg" />
+    <Content Include="Menu.svg" />
     <Content Include="Pencil.svg" />
+    <Content Include="Rectangle 88.svg" />
     <Content Include="Scripts\bootstrap.bundle.js" />
     <Content Include="Scripts\bootstrap.bundle.min.js" />
     <Content Include="Scripts\bootstrap.esm.js" />

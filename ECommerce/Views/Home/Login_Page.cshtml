@@ -1,56 +1,83 @@
 ﻿@{
     ViewBag.Title = "Login_Page";
 }
-<style>
-    .bg-brown {
-        background-color: #5c3832;
-    }
-    .bg-gray-color {
-        background-color: dimgray;
-    }
-    .bg-gray {
-        color: dimgray;
-    }.bg-white{
-         color: white;
-     }
-    .font-league {
-        font-family: 'League Spartan';
-        font-weight: bolder;
-        color: dimgray;
-    }
-    .font-poppins {
-        font-family: 'Poppins', sans-serif;
-        color:dimgray;
-    }
-    .bg-gray-color:hover {
-        background-color: #5c5555; 
-    }
-</style>
-
-<form>
-    <div class="row">
-        <div class="col-6">
-            <img src="~/Blue Modern Shoes Sale Facebook Post (1).svg" height="540px" style="margin-top: -4%; margin-left: 10%" />
-        </div>
-        <div class="col-6">
-            <div style="width: 400px; margin-left: 100px; height:fit-content">
-                <div class="row">
-                    <div class="col">
-                        <br /> <br /> <br />
-                        <h2 class="font-league" style="font-size: 60px; margin-top: -8%">foot forward </h2>
-                        <p style="font-size: 14px; width: 350px" class="font-poppins">Step into a world where fashion meets function, and let Foot Forward be your go-to destination for all your footwear needs. Because with us, it's not just about shoes it's about putting your best foot forward with swag in every step. </p><br />
-                        Username<input type="text" id="cus_email" class="form-control" placeholder="juandelacruz@email.com " required />
-                        Password<input type="password" id="cus_pass" name="cus_pass" class="form-control" required /><br />
-                        <button type="button" class="btn bg-gray-color fw-semibold" style="color: white" id="btn_submit">Login</button>&nbsp;&nbsp;
-                        <button type="button" class="btn bg-gray fw-semibold" id="btnCreate">Create an Account?</button>
-                        <br /> <br /><br /> <br /><br />
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title</title>
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            overflow: hidden;
+        }
+        .container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+        }
+        .form-container {
+            max-width: 400px;
+            margin-left: 100px;
+            height: fit-content;
+        }
+        .bg-brown {
+            background-color: #5c3832;
+        }
+        .bg-gray-color {
+            background-color: dimgray;
+        }
+        .bg-gray {
+            color: dimgray;
+        }
+        .bg-white {
+            color: white;
+        }
+        .font-league {
+            font-family: 'League Spartan';
+            font-weight: bolder;
+            color: dimgray;
+        }
+        .font-poppins {
+            font-family: 'Poppins', sans-serif;
+            color: dimgray;
+        }
+        .bg-gray-color:hover {
+            background-color: #5c5555;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <form>
+            <div class="row">
+                <div class="col-6">
+                    <img src="~/Blue Modern Shoes Sale Facebook Post (1).svg" height="540px" style="margin-top: -4%; margin-left: -120px" />
+                </div>
+                <div class="col-6">
+                    <div class="form-container">
+                        <div class="row">
+                            <div class="col">
+                                <br /> <br /> <br />
+                                <h2 class="font-league" style="font-size: 60px; margin-top: -8%">foot forward </h2>
+                                <p style="font-size: 14px; width: 350px" class="font-poppins">Step into a world where fashion meets function, and let Foot Forward be your go-to destination for all your footwear needs. Because with us, it's not just about shoes it's about putting your best foot forward with swag in every step.</p>
+                                Username<input type="text" id="cus_email" class="form-control" placeholder="juandelacruz@email.com " required />
+                                Password<input type="password" id="cus_pass" name="cus_pass" class="form-control" required /><br />
+                                <button type="button" class="btn bg-gray-color fw-semibold" style="color: white" id="btn_submit">Login</button>&nbsp;&nbsp;
+                                <button type="button" class="btn bg-gray fw-semibold" id="btnCreate">Create an Account?</button>
+                                <br /> <br /><br /> <br /><br />
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </form>
     </div>
-</form>
-<br />
 
-<script src="~/Scripts/Jquery/jquery-3.7.1.min.js"></script>
-<script src="~/Scripts/MyJquery/Login.js"></script>
+    <script src="~/Scripts/Jquery/jquery-3.7.1.min.js"></script>
+    <script src="~/Scripts/MyJquery/Login.js"></script>
+</body>
+</html>
