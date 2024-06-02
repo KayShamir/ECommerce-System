@@ -6,7 +6,16 @@
     .bg-lbrown {
         background-color: #e5d2c4;
     }
-
+    .bg-gray {
+        background-color: dimgray;
+    }
+    .navbar-custom {
+        border-end-end-radius: 10px;
+        border-end-start-radius: 10px;
+    }
+    .font-poppins {
+        font-family: 'Poppins', sans-serif;
+    }
 </style>
 <html>
 <head>
@@ -17,9 +26,9 @@
     @Scripts.Render("~/bundles/modernizr")
 </head>
 <body>
-    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-brown">
-        <div class="container">
-            @Html.ActionLink("Bragz Shoes", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-gray navbar-custom">
+        <div class="container font-poppins">
+            @Html.ActionLink("foot forward", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
             <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" title="Toggle navigation" aria-controls="navbarSupportedContent"
                     aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -33,7 +42,7 @@
             </div>
         </div>
     </nav>
-    <div class="bg-lbrown" style="height: 500px">
+    <div style="height: 500px">
         @RenderBody()
     </div>
     @Scripts.Render("~/bundles/jquery")

@@ -131,6 +131,8 @@
     <Content Include="App_Data\Database1_log.ldf">
       <DependentUpon>Database1.mdf</DependentUpon>
     </Content>
+    <Content Include="Blue Modern Shoes Sale Facebook Post %281%29.svg" />
+    <Content Include="Blue Modern Shoes Sale Facebook Post.svg" />
     <Content Include="Content\bootstrap-grid.css" />
     <Content Include="Content\bootstrap-grid.min.css" />
     <Content Include="Content\bootstrap-grid.rtl.css" />
