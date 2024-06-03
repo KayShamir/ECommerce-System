@@ -24,8 +24,10 @@
                     data: { userId: userId },
                     success: function (response) {
                         if (response.success) {
-                            alert("Checkout successful!");
-                            window.location.reload(); // Reload the page after successful checkout
+                            toastr.success("Checkout successful!");
+                            setTimeout(function () {
+                                window.location.reload();
+                            }, 1000);
                         } else {
                             alert(response.error);
                         }

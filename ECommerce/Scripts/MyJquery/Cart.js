@@ -14,7 +14,7 @@
                     toastr.success('Product Added to Cart');
                     setTimeout(function () {
                         location.reload();
-                    }, 2000);
+                    }, 1000);
                 },
                 error: function () {
                     toastr.error('Error adding to cart');
@@ -42,7 +42,7 @@
                         row.remove();
                         setTimeout(function () {
                             location.reload();
-                        }, 2000);
+                        }, 1000);
                     } else {
                         toastr.error(response.message);
                     }
@@ -54,7 +54,16 @@
         });
     });
     $('#btnLogout').click(function () {
-        window.location.href = '../Home/Login_Page';
+        $.ajax({
+            url: '../Home/Logout',
+            type: 'POST',
+            success: function () {
+                window.location.href = '../Home/Login_Page';
+            },
+            error: function () {
+                toastr.error('Error logging out');
+            }
+        });
     });
 });
 function incrementQuantity(prodId) {
@@ -99,7 +108,7 @@ function incrementQuantity(prodId) {
                     toastr.success('Quantity updated');
                     setTimeout(function () {
                         location.reload();
-                    }, 2000);
+                    }, 1000);
                 } else {
                     toastr.error(response.message);
                 }
@@ -131,7 +140,7 @@ function decrementQuantity(prodId) {
                     toastr.success('Quantity updated');
                     setTimeout(function () {
                         location.reload();
-                    }, 2000);
+                    }, 1000);
                 } else {
                     toastr.error(response.message);
                 }

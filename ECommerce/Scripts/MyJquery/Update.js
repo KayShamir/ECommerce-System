@@ -61,7 +61,7 @@
                 $('#updateModal').modal('hide');
                 setTimeout(function () {
                     location.reload();
-                }, 3000);
+                }, 1000);
             },
             error: function () {
                 alert('Error saving changes.');

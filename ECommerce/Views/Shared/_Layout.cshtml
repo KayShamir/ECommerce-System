@@ -21,6 +21,11 @@
         font-family: 'Poppins', sans-serif;
         color: dimgray
     }
+    .navbar-custom {
+        border-end-end-radius: 10px;
+        border-end-start-radius: 10px;
+        border-bottom: 5px solid #e5e5e5;
+    }
 </style>
 <html>
 <head>
@@ -45,7 +50,7 @@
                 <ul class="navbar-nav flex-grow-1">
                     @if (isAuthenticated)
                     {
-                        <ul class="navbar-nav" style="margin-left: -10px">
+                        <ul class="navbar-nav" style="margin-left: 470px;">
                             <li class="nav-item">
                                 <a href="@Url.Action("User_Dashboard", "Home")" class="nav-link">
                                     <img src="~/brand_ff (1).svg" style="width: 160px; height: 40px;" />

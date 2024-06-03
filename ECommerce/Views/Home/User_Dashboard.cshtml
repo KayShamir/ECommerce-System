@@ -37,7 +37,7 @@
             "onclick": null,
             "showDuration": "300", // Animation duration
             "hideDuration": "1000", // Animation duration
-            "timeOut": "3000", // 5 seconds
+            "timeOut": "1000", // 5 seconds
             "extendedTimeOut": "1000", // 1 second longer than 'timeOut'
             "showEasing": "swing",
             "hideEasing": "linear",
@@ -330,7 +330,7 @@
 
     <!-- Button with Image -->
     <button class="btn btn-image float-end" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">
-        <img src="~/Shopping Cart (1).svg" alt="Toggle right offcanvas" style="width: 40px; margin-top: -250%">
+        <img src="~/Shopping Cart (1).svg" alt="Toggle right offcanvas" style="width: 45px; margin-top: -180%">
     </button>
     <br />
     <br />
@@ -372,7 +372,7 @@
                                             }
                                             else
                                             {
-                                                <p class="card-text float-start" style="font-size: small; margin-top: 10%">Stocks: @reader["PROD_STOCK"]</p>
+                                                <p class="card-text float-start" style="font-size: small">Stocks: @reader["PROD_STOCK"]</p>
                                             }
                                         </div>
                                         <div class="card-footer" style="padding-top:1%; padding-bottom:1%">
@@ -510,22 +510,22 @@
                             {
                                 cmd.CommandType = CommandType.Text;
                                 cmd.CommandText = @"
-                            SELECT
-                                p.prod_id,
-                                p.prod_name,
-                                p.prod_file,
-                                c.cart_qty,
-                                p.prod_price,
-                                c.cart_total,
-                                p.prod_stock
-                            FROM
-                                CART c
-                            JOIN
-                                PRODUCT p
-                            ON
-                                c.prod_id = p.prod_id
-                            WHERE
-                                c.cus_id = @cus_id";
+                                    SELECT
+                                        p.prod_id,
+                                        p.prod_name,
+                                        p.prod_file,
+                                        c.cart_qty,
+                                        p.prod_price,
+                                        c.cart_total,
+                                        p.prod_stock
+                                    FROM
+                                        CART c
+                                    JOIN
+                                        PRODUCT p
+                                    ON
+                                        c.prod_id = p.prod_id
+                                    WHERE
+                                        c.cus_id = @cus_id";
 
                                 cmd.Parameters.AddWithValue("@cus_id", cus_id);
                                 using (var reader = cmd.ExecuteReader())
@@ -602,8 +602,8 @@
                 }
             </div>
         </div>
-
     </body>
+
 
     <!-- Update Customer Modal -->
     <div class="modal fade" id="updateModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
