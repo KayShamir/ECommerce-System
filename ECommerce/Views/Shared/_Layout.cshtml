@@ -3,18 +3,23 @@
     .bg-brown {
         background-color: #5c3832;
     }
+
     .bg-lbrown {
         background-color: #e5d2c4;
     }
+
     .bg-gray {
         background-color: dimgray;
     }
+
     .navbar-custom {
         border-end-end-radius: 10px;
         border-end-start-radius: 10px;
     }
+
     .font-poppins {
         font-family: 'Poppins', sans-serif;
+        color: dimgray
     }
 </style>
 <html>
@@ -25,19 +30,29 @@
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
 </head>
+    @using System.Web
+    @{
+        var isAuthenticated = HttpContext.Current.Session["UserId"] != null;
+    }
 <body>
-    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-gray navbar-custom">
+    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-custom">
         <div class="container font-poppins">
-            @Html.ActionLink("foot forward", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
             <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" title="Toggle navigation" aria-controls="navbarSupportedContent"
                     aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse d-sm-inline-flex justify-content-between">
                 <ul class="navbar-nav flex-grow-1">
-                    <li>@Html.ActionLink("Home", "Index", "Home", new { area = "" }, new { @class = "nav-link" })</li>
-                    <li>@Html.ActionLink("About", "About", "Home", new { area = "" }, new { @class = "nav-link" })</li>
-                    <li>@Html.ActionLink("Contact", "Contact", "Home", new { area = "" }, new { @class = "nav-link" })</li>
+                    @if (isAuthenticated)
+                    {
+                        <ul class="navbar-nav" style="margin-left: -10px">
+                            <li class="nav-item">
+                                <a href="@Url.Action("User_Dashboard", "Home")" class="nav-link">
+                                    <img src="~/brand_ff (1).svg" style="width: 160px; height: 40px;" />
+                                </a>
+                            </li>
+                        </ul>
+                    }
                 </ul>
             </div>
         </div>
@@ -50,5 +65,3 @@
     @RenderSection("scripts", required: false)
 </body>
 </html>
-
-

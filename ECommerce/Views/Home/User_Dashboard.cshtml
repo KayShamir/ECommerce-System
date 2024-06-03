@@ -330,7 +330,7 @@
 
     <!-- Button with Image -->
     <button class="btn btn-image float-end" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">
-        <img src="~/Shopping Cart.svg" alt="Toggle right offcanvas" style="width: 40px; margin-top: -250%">
+        <img src="~/Shopping Cart (1).svg" alt="Toggle right offcanvas" style="width: 40px; margin-top: -250%">
     </button>
     <br />
     <br />
@@ -344,7 +344,7 @@
             using (var cmd = db.CreateCommand())
             {
                 cmd.CommandType = CommandType.Text;
-                cmd.CommandText = "SELECT * FROM PRODUCT";
+                cmd.CommandText = "SELECT * FROM PRODUCT WHERE PROD_STOCK > 0";
                 using (var reader = cmd.ExecuteReader())
                 {
                     if (reader.HasRows)
