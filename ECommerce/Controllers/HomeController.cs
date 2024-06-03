@@ -113,33 +113,48 @@ namespace ECommerce.Controllers
             string cus_email = Request["cus_email"];
             string cus_pass = Request["cus_pass"];
 
-            string image = Path.GetFileName(cus_file.FileName);
-            string file_path = "C:\\Uploads";
-            string filepath = Path.Combine(file_path, image);
-            cus_file.SaveAs(filepath);
-
-
-            using (var db = new SqlConnection(conn_str))
+            if (cus_file != null && cus_file.ContentLength > 0)
             {
-                db.Open();
-                using (var cmd = db.CreateCommand())
-                {
-                    cmd.CommandType = CommandType.Text;
-                    cmd.CommandText = "INSERT INTO CUSTOMER (CUS_FIRSTNAME, CUS_LASTNAME, CUS_BIRTHDATE, CUS_ADDRESS, CUS_PHONENUMBER, CUS_EMAIL, CUS_PASS, [CUS_FILE]) " +
-                        "VALUES (@CUS_FIRSTNAME, @cus_lastname, @cus_birthdate, @cus_address, @cus_phonenumber, @cus_email,@cus_pass, @cus_file)";
-                    cmd.Parameters.AddWithValue("@cus_firstname", cus_firstname);
-                    cmd.Parameters.AddWithValue("@cus_lastname", cus_lastname);
-                    cmd.Parameters.AddWithValue("@cus_birthdate", cus_birthdate);
-                    cmd.Parameters.AddWithValue("@cus_address", cus_address);
-                    cmd.Parameters.AddWithValue("@cus_phonenumber", cus_phonenumber);
-                    cmd.Parameters.AddWithValue("@cus_email", cus_email);
-                    cmd.Parameters.AddWithValue("@cus_pass", cus_pass);
-                    cmd.Parameters.AddWithValue("@cus_file", image);
-                    cmd.ExecuteNonQuery();
-                }
-            }
+                string image = Path.GetFileName(cus_file.FileName);
+                string file_path = "C:\\Uploads";
+                string filepath = Path.Combine(file_path, image);
+                cus_file.SaveAs(filepath);
 
-            return Json(data, JsonRequestBehavior.AllowGet);
+                using (var db = new SqlConnection(conn_str))
+                {
+                    db.Open();
+                    using (var cmd = db.CreateCommand())
+                    {
+                        cmd.CommandType = CommandType.Text;
+                        cmd.CommandText = "SELECT COUNT(*) FROM CUSTOMER WHERE CUS_EMAIL = @cus_email";
+                        cmd.Parameters.AddWithValue("@cus_email", cus_email);
+                        int emailCount = (int)cmd.ExecuteScalar();
+
+                        if (emailCount > 0)
+                        {
+                            return Json(new { success = false, message = "Email already exists. Please use a different email." }, JsonRequestBehavior.AllowGet);
+                        }
+                        cmd.Parameters.Clear();
+
+                        cmd.CommandText = "INSERT INTO CUSTOMER (CUS_FIRSTNAME, CUS_LASTNAME, CUS_BIRTHDATE, CUS_ADDRESS, CUS_PHONENUMBER, CUS_EMAIL, CUS_PASS, CUS_FILE) " +
+                                          "VALUES (@cus_firstname, @cus_lastname, @cus_birthdate, @cus_address, @cus_phonenumber, @cus_email, @cus_pass, @cus_file)";
+                        cmd.Parameters.AddWithValue("@cus_firstname", cus_firstname);
+                        cmd.Parameters.AddWithValue("@cus_lastname", cus_lastname);
+                        cmd.Parameters.AddWithValue("@cus_birthdate", cus_birthdate);
+                        cmd.Parameters.AddWithValue("@cus_address", cus_address);
+                        cmd.Parameters.AddWithValue("@cus_phonenumber", cus_phonenumber);
+                        cmd.Parameters.AddWithValue("@cus_email", cus_email);
+                        cmd.Parameters.AddWithValue("@cus_pass", cus_pass);
+                        cmd.Parameters.AddWithValue("@cus_file", image);
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+                return Json(new { success = true, message = "Customer added successfully!" }, JsonRequestBehavior.AllowGet);
+            }
+            else
+            {
+                return Json(new { success = false, message = "File upload failed." }, JsonRequestBehavior.AllowGet);
+            }
         }
         public ActionResult Dashboard_Admin()
         {

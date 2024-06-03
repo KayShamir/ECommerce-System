@@ -1,5 +1,7 @@
 ﻿$().ready(function () {
-    $('#btn_submit').click(function () {
+    $('#btn_submit').click(function (event) {
+        event.preventDefault();
+
         var data = new FormData();
         data.append('cus_firstname', $('#cus_firstname').val());
         data.append('cus_lastname', $('#cus_lastname').val());
@@ -16,21 +18,22 @@
             data: data,
             processData: false,
             contentType: false,
-            success: function (data) {
-                console.log(data);
-                alert('Successfully Created an Account!');
+            success: function (response) {
+                console.log(response);
+                if (response.success) {
+                    alert('Successfully Created an Account!');
+                    window.location.href = '../Home/Login_Page';
+                } else {
+                    alert(response.message);
+                }
             },
             error: function () {
                 alert('Error uploading file.');
             }
         });
+    });
 
-    })
-    $('#btn_submit').click(function () {
-        window.location.href = '../Home/Login_Page';
-    })
     $('#btnBack').click(function () {
         window.location.href = '../Home/Login_Page';
-    })
-   
+    });
 });
