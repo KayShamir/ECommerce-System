@@ -31,7 +31,7 @@
     $(".btnDelete").click(function () {
         var row = $(this).closest('tr');
         var prodId = row.find('.prod_id').text().trim();
-        $('#btnYes').off('click').on('click', function () {
+        $('#cart_yes').off('click').on('click', function () {
             $.ajax({
                 url: '../Home/DeleteCart',
                 type: 'POST',
@@ -53,16 +53,10 @@
             });
         });
     });
-
-    $('#btnNo').click(function () {
-        $('#deleteModal').modal('hide');
-    });
     $('#btnLogout').click(function () {
         window.location.href = '../Home/Login_Page';
     });
 });
-
-
 function incrementQuantity(prodId) {
     var qtyField = document.getElementById('qty-' + prodId);
     var currentQty = parseInt(qtyField.value);
@@ -86,39 +80,14 @@ function updateTotalPrice(prodId) {
     var totalPrice = unitPrice * currentQty;
     document.getElementById('price-' + prodId).innerText = totalPrice.toFixed(2);
 }
+
 function incrementQuantity(prodId) {
     var qtyField = document.getElementById('qty-' + prodId);
     var currentQty = parseInt(qtyField.value);
     var newQty = currentQty + 1;
+    var stock = parseInt($('tr[data-stock][data-prod-id="' + prodId + '"]').data('stock')); // Get the specific stock for this product
 
-    $.ajax({
-        url: '../Home/UpdateCartQuantity',
-        type: 'POST',
-        data: { prodId: prodId, newQty: newQty },
-        success: function (response) {
-            if (response.success) {
-                qtyField.value = newQty;
-                updateTotalPrice(prodId);
-                toastr.success('Quantity updated');
-                setTimeout(function () {
-                    location.reload();
-                }, 2000);
-            } else {
-                toastr.error(response.message);
-            }
-        },
-        error: function () {
-            toastr.error('Error updating quantity');
-        }
-    });
-}
-
-function decrementQuantity(prodId) {
-    var qtyField = document.getElementById('qty-' + prodId);
-    var currentQty = parseInt(qtyField.value);
-    if (currentQty > 1) {
-        var newQty = currentQty - 1;
-
+    if (newQty <= stock) {
         $.ajax({
             url: '../Home/UpdateCartQuantity',
             type: 'POST',
@@ -139,8 +108,43 @@ function decrementQuantity(prodId) {
                 toastr.error('Error updating quantity');
             }
         });
+    } else {
+        toastr.error('Quantity exceeds available stock');
     }
 }
+
+
+function decrementQuantity(prodId) {
+    var qtyField = document.getElementById('qty-' + prodId);
+    var currentQty = parseInt(qtyField.value);
+    var newQty = currentQty - 1;
+
+    if (newQty >= 1) {
+        $.ajax({
+            url: '../Home/UpdateCartQuantity',
+            type: 'POST',
+            data: { prodId: prodId, newQty: newQty },
+            success: function (response) {
+                if (response.success) {
+                    qtyField.value = newQty;
+                    updateTotalPrice(prodId);
+                    toastr.success('Quantity updated');
+                    setTimeout(function () {
+                        location.reload();
+                    }, 2000);
+                } else {
+                    toastr.error(response.message);
+                }
+            },
+            error: function () {
+                toastr.error('Error updating quantity');
+            }
+        });
+    } else {
+        toastr.error('Quantity cannot be less than 1');
+    }
+}
+
 
 function updateTotalPrice(prodId) {
     var qtyField = document.getElementById('qty-' + prodId);
@@ -149,4 +153,3 @@ function updateTotalPrice(prodId) {
     var totalPrice = unitPrice * currentQty;
     document.getElementById('price-' + prodId).innerText = totalPrice.toFixed(2);
 }
-

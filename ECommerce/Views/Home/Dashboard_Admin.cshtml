@@ -21,11 +21,6 @@
             #toast-container > .toast-success .toast-message {
                 color: #ffffff !important;
             }
-
-        .font-poppins {
-            font-family: 'Poppins', sans-serif;
-            font-weight: 600;
-        }
     </style>
 </head>
 <body>
@@ -37,13 +32,13 @@
             "debug": false,
             "newestOnTop": true,
             "progressBar": true,
-            "positionClass": "toast-top-right",
+            "positionClass": "toast-top-right", // Adjust position as needed
             "preventDuplicates": false,
             "onclick": null,
-            "showDuration": "300",
-            "hideDuration": "1000",
-            "timeOut": "3000",
-            "extendedTimeOut": "1000",
+            "showDuration": "300", // Animation duration
+            "hideDuration": "1000", // Animation duration
+            "timeOut": "3000", // 5 seconds
+            "extendedTimeOut": "1000", // 1 second longer than 'timeOut'
             "showEasing": "swing",
             "hideEasing": "linear",
             "showMethod": "fadeIn",
@@ -52,7 +47,8 @@
     </script>
 </body>
 
-<div style="margin-left:5%; margin-right:5%; margin-top: 1%">
+
+<div style="margin-left:3%; margin-right:3%; margin-top: 1%">
     <div style="display: flex; align-items: center;">
         <h3 style="margin-top:10px; margin-right: 20px;" class="font-poppins">Welcome, Admin!</h3>
     </div>
@@ -62,7 +58,7 @@
                 <img src="~/Group 61.svg" style="width: 20px; height: 20px; margin-top: -2px;" /> Add Product
             </button>
         </span>
-        <button type="button" class="btn btn-product btn-secondary" id="btn_product_info" style="margin-left:150px">Product Information</button>
+        <button type="button" class="btn btn-product btn-secondary" id="btn_product_info" style="margin-left:250px">Product Information</button>
         <button type="button" class="btn btn-user btn-secondary" id="btn_user_info">User Information</button>
     </div>
     <div style="margin-bottom: 1%; margin-top: 10px">
@@ -70,7 +66,6 @@
             <img src="~/🦆 icon _logout_ (1).svg" alt="Edit" style="width: 20px; height: 20px; margin-top: -5%; margin-right: 10px" />Logout
         </button>
     </div>
-
 
     <!-- Add Product Modal -->
     <div class="modal fade" id="addModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -312,16 +307,16 @@
                                         <th width="5%" style="text-align:center">ID</th>
                                         <th width="10%">NAME</th>
                                         <th width="10%">IMAGE</th>
-                                        <th width="8%">STOCKS</th>
-                                        <th width="10%">PRICE</th>
-                                        <th width="12%">GENDER</th>
+                                        <th width="7%">STOCKS</th>
+                                        <th width="7%">PRICE</th>
+                                        <th width="7%">GENDER</th>
                                         <th width="7%">COLOR</th>
                                         <th width="5%">SIZE</th>
                                         <th width="10%">MATERIAL</th>
                                         <th width="10%">CATEGORY</th>
-                                        <th width="30%" style="max-width: 30%; word-wrap: break-word;">DESCRIPTION</th>
-                                        <th width="15%"></th>
-                                        <th width="15%"></th>
+                                        <th width="40%" style="max-width: 30%; word-wrap: break-word;">DESCRIPTION</th>
+                                        <th width="10%"></th>
+                                        <th width="10%"></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -335,14 +330,14 @@
                                                     <img src="../Home/Image?filename=@HttpUtility.UrlEncode(reader["PROD_FILE"] + "")" style="max-width: 100px; max-height: 100px;" />
                                                 </center>
                                             </td>
-                                            <td>@reader["PROD_STOCK"]</td>
-                                            <td>₱@reader["PROD_PRICE"]</td>
-                                            <td>@reader["PROD_GENDER"]</td>
-                                            <td>@reader["PROD_COLOR"]</td>
-                                            <td>@reader["PROD_SIZE"]</td>
+                                            <td style="text-align:center">@reader["PROD_STOCK"]</td>
+                                            <td style="font-size:small">₱@reader["PROD_PRICE"]</td>
+                                            <td style="font-size:small">@reader["PROD_GENDER"]</td>
+                                            <td style="font-size:small">@reader["PROD_COLOR"]</td>
+                                            <td style="text-align:center">@reader["PROD_SIZE"]</td>
                                             <td style="font-size:small">@reader["PROD_MATERIAL"]</td>
                                             <td style="font-size:small">@reader["PROD_CATEGORY"]</td>
-                                            <td style="font-size:smaller; max-width: 18%; word-wrap: break-word;">@reader["PROD_DESC"]</td>
+                                            <td style="font-size:10px; max-width: 18%; word-wrap: break-word;">@reader["PROD_DESC"]</td>
                                             <td>
                                                 <span>
                                                     <button type="button" name="edit_btn" class="btn btn-primary btnEdit" id="btnEdit" data-bs-toggle="modal" data-bs-target="#updateModal">

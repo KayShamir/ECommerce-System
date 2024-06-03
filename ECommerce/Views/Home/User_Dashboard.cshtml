@@ -24,6 +24,7 @@
     </style>
 </head>
 <body>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <script>
         toastr.options = {
@@ -31,13 +32,13 @@
             "debug": false,
             "newestOnTop": true,
             "progressBar": true,
-            "positionClass": "toast-top-right",
+            "positionClass": "toast-top-right", // Adjust position as needed
             "preventDuplicates": false,
             "onclick": null,
-            "showDuration": "300",
-            "hideDuration": "1000",
-            "timeOut": "3000",
-            "extendedTimeOut": "1000",
+            "showDuration": "300", // Animation duration
+            "hideDuration": "1000", // Animation duration
+            "timeOut": "3000", // 5 seconds
+            "extendedTimeOut": "1000", // 1 second longer than 'timeOut'
             "showEasing": "swing",
             "hideEasing": "linear",
             "showMethod": "fadeIn",
@@ -45,6 +46,7 @@
         };
     </script>
 </body>
+
 <head>
     <style>
         .card_button {
@@ -223,11 +225,14 @@
         .offcanvas-start {
             width: 300px;
         }
+
         .cart-color {
             background-color: lightgray;
-            border-radius:10px;
+            border-radius: 10px;
         }
-
+        .font-poppins {
+            font-family: 'Poppins', sans-serif;
+        }
     </style>
 </head>
 
@@ -294,11 +299,13 @@
                                     <span style="width: 60px; height: 60px;">
                                         <img src="../Home/Image?filename=@HttpUtility.UrlEncode(customerImageUrl)" alt="Customer Info" style="width: 180px; height: 180px; margin-left: 60px" class="rounded-circle align-items-center">
                                     </span>
-                                    <p style=" margin-left: 20px; margin-top: 20px"><strong>Name:</strong> @reader["cus_firstname"]  @reader["cus_lastname"]</p>
+                                    <button class="btn btn-link btnEdit float-end" data-bs-toggle="modal" data-bs-target="#updateModal" style="margin-top: 10px; margin-left: 20px; background-color: transparent; border: none;">Edit your Profile</button><br />
+                                    <p style=" margin-left: 20px; margin-top: 50px"><strong>Name:</strong> @reader["cus_firstname"]  @reader["cus_lastname"]</p>
                                     <p style=" margin-left: 20px"><strong>Birthdate:</strong> @reader["cus_birthdate"]</p>
                                     <p style=" margin-left: 20px"><strong>Address:</strong> @reader["cus_address"]</p>
                                     <p style=" margin-left: 20px"><strong>Phone Number:</strong> @reader["cus_phonenumber"]</p>
                                     <p style=" margin-left: 20px"><strong>Email:</strong> @reader["cus_email"]</p>
+                                    <button class="btn btn-link btnRemove float-start" data-bs-toggle="modal" data-bs-target="#deleteAccount" style="margin-left: 7px; background-color: transparent; border: none; color:red">Remove Account</button><br />
                                 }
                                 else
                                 {
@@ -313,9 +320,9 @@
                     <p>User not logged in.</p>
                 }
             }
-            <span style="margin-left: 20px" class="mt-4">
+            <span style="margin-left: 80px" class="mt-4">
                 <button type="button" class="btn btn-danger mt-5" id="btnLogout" style="width:30%">
-                    <img src="~/🦆 icon _logout_ (1).svg" alt="Edit" style="width: 20px; height: 20px; margin-top: -5%; margin-right: 10px;" />Logout
+                    <img src="~/🦆 icon _logout_ (1).svg" alt="Edit" style="width: 20px; height: 20px; margin-top: -5%; margin-right: 0px;" />Logout
                 </button>
             </span>
         </div>
@@ -390,10 +397,8 @@
             }
         }
     }
-
-
-    <!-- Delete Product Modal -->
-    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <!-- Delete Cart Modal -->
+    <div class="modal fade" id="deleteCart" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -405,7 +410,26 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" id="btnNo" data-bs-dismiss="modal">No</button>
-                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal" id="btnYes">Yes</button>
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal" id="cart_yes">Yes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Account Modal -->
+    <div class="modal fade" id="deleteAccount" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Delete Product</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to delete your account permanently?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="btnNo" data-bs-dismiss="modal">No</button>
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal" id="account_yes" >Yes</button>
                 </div>
             </div>
         </div>
@@ -464,105 +488,158 @@
     </div>
 
     <body>
-    <!-- Offcanvas -->
-    <div class="offcanvas offcanvas-end offcanvas-wider" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
-        <div class="offcanvas-header">
-            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-        </div>
-        <div class="offcanvas-body">
-            @{
-                var cus_id = Session["UserId"];
-                if (cus_id != null)
-                {
-                    string conn_string = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\kaysh\source\repos\ECommerce\ECommerce\App_Data\Database1.mdf;Integrated Security=True";
-                    using (var db = new SqlConnection(conn_string))
+        <!-- Offcanvas -->
+        <div class="offcanvas offcanvas-end offcanvas-wider" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
+            <div class="offcanvas-header d-flex">
+                <span class="d-flex align-items-center">
+                    <!-- Added d-flex and align-items-center classes for flexbox alignment -->
+                    <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                    <p class="offcanvas-title ms-3 mb-0 font-poppins" style="font-size: 20px; font-weight:bold">Orders</p> <!-- Adjusted ms-3 class for margin -->
+                </span>
+            </div>
+            <div class="offcanvas-body">
+                @{
+                    var cus_id = Session["UserId"];
+                    if (cus_id != null)
                     {
-                        db.Open();
-                        using (var cmd = db.CreateCommand())
+                        string conn_string = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\kaysh\source\repos\ECommerce\ECommerce\App_Data\Database1.mdf;Integrated Security=True";
+                        using (var db = new SqlConnection(conn_string))
                         {
-                            cmd.CommandType = CommandType.Text;
-                            cmd.CommandText = @"
-                                                SELECT
-                                                    p.prod_id,
-                                                    p.prod_name,
-                                                    p.prod_file,
-                                                    c.cart_qty,
-                                                    p.prod_price,
-                                                    c.cart_total
-                                                FROM
-                                                    CART c
-                                                JOIN
-                                                    PRODUCT p
-                                                ON
-                                                    c.prod_id = p.prod_id
-                                                WHERE
-                                                    c.cus_id = @cus_id";
-
-                            cmd.Parameters.AddWithValue("@cus_id", cus_id);
-                            using (var reader = cmd.ExecuteReader())
+                            db.Open();
+                            using (var cmd = db.CreateCommand())
                             {
-                                <table border="1" id="datatable" class="table table-group-divider">
-                                    <thead>
-                                        <tr>
-                                            <th width="20%"></th>
-                                            <th width="15%"></th>
-                                            <th width="10%"></th>
-                                            <th width="17%"></th>
-                                            <th width="5%"></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @while (reader.Read())
-                                        {
-                                            var prodId = reader["prod_id"].ToString();
-                                            var prodName = reader["prod_name"].ToString();
-                                            var prodImage = reader["prod_file"].ToString();
-                                            var cartCount = reader["cart_qty"].ToString();
-                                            var totalPrice = reader["cart_total"].ToString();
-                                            var unitPrice = (double.Parse(totalPrice) / int.Parse(cartCount)).ToString("F2");
+                                cmd.CommandType = CommandType.Text;
+                                cmd.CommandText = @"
+                            SELECT
+                                p.prod_id,
+                                p.prod_name,
+                                p.prod_file,
+                                c.cart_qty,
+                                p.prod_price,
+                                c.cart_total,
+                                p.prod_stock
+                            FROM
+                                CART c
+                            JOIN
+                                PRODUCT p
+                            ON
+                                c.prod_id = p.prod_id
+                            WHERE
+                                c.cus_id = @cus_id";
 
-                                            <tr class="items">
-                                                <td hidden class="prod_id">@prodId</td>
-                                                <td style="text-align: center">
-                                                    <img src="../Home/Image?filename=@HttpUtility.UrlEncode(prodImage)" width="50%" />
-                                                </td>
-                                                <td class="prod-id align-content-center">@prodName</td>
-                                                <td class="align-content-center">
-                                                    <span class="align-content-center" id="price-@prodId" data-unit-price="@unitPrice">@totalPrice</span>
-                                                </td>
-                                                <td class="align-content-center">
-                                                    <div class="cart_qty" style="width:67%">
-                                                        <button type="button" class="qty-btn qty-btn-decrement" onclick="decrementQuantity('@prodId')">-</button>
-                                                        <input type="text" id="qty-@prodId" value="@cartCount" readonly class="qty-input" />
-                                                        <button type="button" class="qty-btn qty-btn-increment" onclick="incrementQuantity('@prodId')">+</button>
-                                                    </div>
-                                                </td>
-                                                <td class="align-content-center">
-                                                    <span>
-                                                        <button type="button" name="btn_delete" class="btn btn-danger btnDelete" id="btnDelete" data-bs-toggle="modal" data-bs-target="#deleteModal">
-                                                            <img src="~/Delete.svg" alt="Edit" style="width: 20px; height: 20px; margin-top: -25%; margin-left:3%" class="ml-4" />
-                                                        </button>
-                                                    </span>
-                                                </td>
+                                cmd.Parameters.AddWithValue("@cus_id", cus_id);
+                                using (var reader = cmd.ExecuteReader())
+                                {
+                                    <table border="1" id="datatable" class="table table-group-divider">
+                                        <thead>
+                                            <tr>
+                                                <th width="20%"></th>
+                                                <th width="15%"></th>
+                                                <th width="10%"></th>
+                                                <th width="17%"></th>
+                                                <th width="5%"></th>
                                             </tr>
-                                        }
-                                    </tbody>
-                                </table>
+                                        </thead>
+                                        <tbody>
+                                            @while (reader.Read())
+                                            {
+                                                var prodId = reader["prod_id"].ToString();
+                                                var prodName = reader["prod_name"].ToString();
+                                                var prodImage = reader["prod_file"].ToString();
+                                                var cartCount = reader["cart_qty"].ToString();
+                                                var totalPrice = reader["cart_total"].ToString();
+                                                var unitPrice = (double.Parse(totalPrice) / int.Parse(cartCount)).ToString("F2");
+                                                var stock = reader["prod_stock"].ToString();
+
+                                                <tr class="items" data-stock="@stock" data-prod-id="@prodId">
+                                                    <!-- Assuming a fixed stock for now, adjust as needed -->
+                                                    <td hidden class="prod_id">@prodId</td>
+                                                    <td style="text-align: center">
+                                                        <img src="../Home/Image?filename=@HttpUtility.UrlEncode(prodImage)" width="50%" />
+                                                    </td>
+                                                    <td class="prod-id align-content-center">@prodName</td>
+                                                    <td class="align-content-center">
+                                                        <span class="align-content-center" id="price-@prodId" data-unit-price="@unitPrice">@totalPrice</span>
+                                                    </td>
+                                                    <td class="align-content-center">
+                                                        <div class="cart_qty" style="width:67%">
+                                                            <button type="button" class="qty-btn qty-btn-decrement" onclick="decrementQuantity('@prodId')">-</button>
+                                                            <input type="text" id="qty-@prodId" value="@cartCount" readonly class="qty-input quantity" />
+                                                            <button type="button" class="qty-btn qty-btn-increment" onclick="incrementQuantity('@prodId')">+</button>
+                                                        </div>
+                                                    </td>
+                                                    <td class="align-content-center">
+                                                        <span>
+                                                            <button type="button" name="btn_delete" class="btn btn-danger btnDelete" id="btnDelete" data-bs-toggle="modal" data-bs-target="#deleteCart">
+                                                                <img src="~/Delete.svg" alt="Edit" style="width: 20px; height: 20px; margin-top: -25%; margin-left:3%" class="ml-4" />
+                                                            </button>
+                                                        </span>
+                                                    </td>
+                                                </tr>
+
+                                            }
+                                        </tbody>
+                                    </table>
+                                }
+                                // Reset the command text for the total price query
+                                cmd.CommandText = "SELECT SUM(cart_total) AS TotalPrice FROM cart WHERE cus_id = @cus_id";
+
+                                // Execute the total price query
+                                var totalCartPrice = cmd.ExecuteScalar();
+                                var totalCartPriceValue = (totalCartPrice != DBNull.Value) ? Convert.ToDecimal(totalCartPrice) : 0;
+
+                                <div class="offcanvas-footer d-flex justify-content-between py-3">
+                                    <span style="margin-left: 30px">Total Price: @totalCartPriceValue <span id="totalPrice"></span></span>
+                                    <button style="margin-right: 30px; margin-bottom: 3%" type="button" class="btn btn-primary float-end btncheckout" data-user-id="@cus_id">Checkout</button>
+                                </div>
                             }
                         }
                     }
+                    else
+                    {
+                        <p>User not logged in.</p>
+                    }
                 }
-                else
-                {
-                    <p>User not logged in.</p>
-                }
-            }
+            </div>
+        </div>
+
+    </body>
+
+    <!-- Update Customer Modal -->
+    <div class="modal fade" id="updateModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Edit Profile</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col">
+                            First Name<input type="text" id="cus_firstname" class="form-control" />
+                            Last Name<input type="text" id="cus_lastname" class="form-control" />
+                            Birthdate<input type="date" class="form-control" id="cus_birthdate" disabled />
+                            Address<input type="text" class="form-control" id="cus_address" />
+                        </div>
+                        <div class="col">
+                            Phone Number<input type="number" class="form-control" id="cus_number" />
+                            Email Address<input type="email" id="cus_email" class="form-control" required />
+                            Insert Image<input class="form-control" type="file" name="img" id="cus_file" accept="image/jpeg, image/bmp, image/jpg, image/png, image/gif">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" id="btnSaveChanges">Save changes</button>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-    </body>
 </div>
 
 <script src="~/Scripts/Jquery/jquery-3.7.1.min.js"></script>
 <script src="~/Scripts/MyJquery/Product_Link.js"></script>
 <script src="~/Scripts/MyJquery/Cart.js"></script>
-
+<script src="~/Scripts/MyJquery/Cus_Update.js"></script>
+<script src="~/Scripts/MyJquery/Cus_Delete.js"></script>
+<script src="~/Scripts/MyJquery/checkout.js"></script>

@@ -8,6 +8,24 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
 
+public class UserDetails
+{
+    public string cus_firstname { get; set; }
+    public string cus_lastname { get; set; }
+    public string cus_birthdate { get; set; }
+    public string cus_address { get; set; }
+    public string cus_phonenumber { get; set; }
+    public string cus_email { get; set; }
+}
+public class CartItem
+{
+    public int Id { get; set; } // Unique identifier for the cart item
+    public int Quantity { get; set; } // Quantity of the product in the cart
+    public int CustomerId { get; set; } // Customer ID associated with the cart item
+    public int ProductId { get; set; } // Product ID associated with the cart item
+    public decimal CartTotal { get; set; } // Total price of the cart item
+                                           // Add any other properties as needed
+}
 namespace ECommerce.Controllers
 {
     public class HomeController : Controller
@@ -60,15 +78,15 @@ namespace ECommerce.Controllers
                     cmd.CommandType = CommandType.Text;
                     cmd.CommandText = "INSERT INTO PRODUCT (PROD_NAME, PROD_DESC, PROD_PRICE, PROD_GENDER, PROD_COLOR, PROD_SIZE, PROD_MATERIAL, PROD_CATEGORY, PROD_STOCK, [PROD_FILE]) " +
                         "VALUES (@prod_name, @prod_desc, @prod_price, @prod_gender, @prod_color, @prod_size, @prod_material, @prod_category, @prod_stock, @prod_file)";
-                    cmd.Parameters.AddWithValue("@PROD_NAME", prod_name);                    
-                    cmd.Parameters.AddWithValue("@PROD_DESC", prod_desc);                    
-                    cmd.Parameters.AddWithValue("@PROD_PRICE", prod_price);                    
-                    cmd.Parameters.AddWithValue("@PROD_GENDER", prod_gender);                    
-                    cmd.Parameters.AddWithValue("@PROD_COLOR", prod_color);                    
-                    cmd.Parameters.AddWithValue("@PROD_SIZE", prod_size);                    
-                    cmd.Parameters.AddWithValue("@PROD_MATERIAL", prod_material);                    
-                    cmd.Parameters.AddWithValue("@PROD_CATEGORY", prod_category);                    
-                    cmd.Parameters.AddWithValue("@PROD_STOCK", prod_stock);                    
+                    cmd.Parameters.AddWithValue("@PROD_NAME", prod_name);
+                    cmd.Parameters.AddWithValue("@PROD_DESC", prod_desc);
+                    cmd.Parameters.AddWithValue("@PROD_PRICE", prod_price);
+                    cmd.Parameters.AddWithValue("@PROD_GENDER", prod_gender);
+                    cmd.Parameters.AddWithValue("@PROD_COLOR", prod_color);
+                    cmd.Parameters.AddWithValue("@PROD_SIZE", prod_size);
+                    cmd.Parameters.AddWithValue("@PROD_MATERIAL", prod_material);
+                    cmd.Parameters.AddWithValue("@PROD_CATEGORY", prod_category);
+                    cmd.Parameters.AddWithValue("@PROD_STOCK", prod_stock);
                     cmd.Parameters.AddWithValue("@PROD_FILE", image);
 
                     cmd.ExecuteNonQuery();
@@ -382,12 +400,12 @@ namespace ECommerce.Controllers
                                 response = new { success = true, message = "Product added to cart successfully" };
                             }
 
-                            // Update the product's stock
+                            /*// Update the product's stock
                             cmd.CommandText = "UPDATE Product SET prod_stock = prod_stock - @quantity WHERE prod_id = @prod_id";
                             cmd.Parameters.Clear(); // Clear parameters before setting new ones
                             cmd.Parameters.AddWithValue("@quantity", quantity);
                             cmd.Parameters.AddWithValue("@prod_id", productId);
-                            cmd.ExecuteNonQuery();
+                            cmd.ExecuteNonQuery();*/
                         }
 
                         transaction.Commit();
@@ -450,12 +468,12 @@ namespace ECommerce.Controllers
                                 cmd.Parameters.AddWithValue("@prod_id", prod_id);
                                 cmd.ExecuteNonQuery();
                                 cmd.Parameters.Clear(); // Clear parameters after executing the query
-
+/*
                                 // Update the product's stock
                                 cmd.CommandText = "UPDATE Product SET prod_stock = prod_stock + @quantity WHERE prod_id = @prod_id";
                                 cmd.Parameters.AddWithValue("@quantity", quantity);
                                 cmd.Parameters.AddWithValue("@prod_id", prod_id);
-                                cmd.ExecuteNonQuery();
+                                cmd.ExecuteNonQuery();*/
 
                                 transaction.Commit();
 
@@ -525,12 +543,12 @@ namespace ECommerce.Controllers
                                 cmd.ExecuteNonQuery();
                                 cmd.Parameters.Clear(); // Clear parameters after executing the query
 
-                                // Update the product stock
+                                /*// Update the product stock
                                 int qtyDifference = newQty - oldQty;
                                 cmd.CommandText = "UPDATE Product SET prod_stock = prod_stock - @qtyDifference WHERE prod_id = @prod_id";
                                 cmd.Parameters.AddWithValue("@qtyDifference", qtyDifference);
                                 cmd.Parameters.AddWithValue("@prod_id", prodId);
-                                cmd.ExecuteNonQuery();
+                                cmd.ExecuteNonQuery();*/
 
                                 transaction.Commit();
 
@@ -556,6 +574,244 @@ namespace ECommerce.Controllers
         {
             return View();
         }
-       
+        [HttpGet]
+        public JsonResult GetUserDetails()
+        {
+            var customerId = Session["UserId"];
+            if (customerId == null)
+            {
+                return Json(new { success = false, message = "User not logged in." }, JsonRequestBehavior.AllowGet);
+            }
+
+            string connString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\kaysh\source\repos\ECommerce\ECommerce\App_Data\Database1.mdf;Integrated Security=True";
+
+            using (var db = new SqlConnection(connString))
+            {
+                db.Open();
+                using (var cmd = db.CreateCommand())
+                {
+                    cmd.CommandType = CommandType.Text;
+                    cmd.CommandText = "SELECT * FROM Customer WHERE cus_id = @customerId";
+                    cmd.Parameters.AddWithValue("@customerId", customerId);
+
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            var customerData = new
+                            {
+                                cus_firstname = reader["cus_firstname"].ToString(),
+                                cus_lastname = reader["cus_lastname"].ToString(),
+                                cus_birthdate = reader["cus_birthdate"].ToString(),
+                                cus_address = reader["cus_address"].ToString(),
+                                cus_phonenumber = reader["cus_phonenumber"].ToString(),
+                                cus_email = reader["cus_email"].ToString(),
+                                cus_file = reader["cus_file"].ToString()
+                            };
+
+                            return Json(new { success = true, data = customerData }, JsonRequestBehavior.AllowGet);
+                        }
+                    }
+                }
+            }
+
+            return Json(new { success = false, message = "User details not found." }, JsonRequestBehavior.AllowGet);
+        }
+        [HttpPost]
+        public JsonResult UpdateUserDetails(UserDetails userData)
+        {
+            var customerId = Session["UserId"];
+            if (customerId == null)
+            {
+                return Json(new { success = false, message = "User not logged in." });
+            }
+
+            string connString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\kaysh\source\repos\ECommerce\ECommerce\App_Data\Database1.mdf;Integrated Security=True";
+            try
+            {
+                using (var db = new SqlConnection(connString))
+                {
+                    db.Open();
+                    using (var cmd = db.CreateCommand())
+                    {
+                        cmd.CommandType = CommandType.Text;
+                        cmd.CommandText = @"UPDATE Customer 
+                            SET cus_firstname = @cus_firstname, 
+                                cus_lastname = @cus_lastname, 
+                                cus_birthdate = @cus_birthdate, 
+                                cus_address = @cus_address, 
+                                cus_phonenumber = @cus_phonenumber, 
+                                cus_email = @cus_email
+                            WHERE cus_id = @customerId";
+
+                        cmd.Parameters.AddWithValue("@cus_firstname", userData.cus_firstname);
+                        cmd.Parameters.AddWithValue("@cus_lastname", userData.cus_lastname);
+                        cmd.Parameters.AddWithValue("@cus_birthdate", userData.cus_birthdate);
+                        cmd.Parameters.AddWithValue("@cus_address", userData.cus_address);
+                        cmd.Parameters.AddWithValue("@cus_phonenumber", userData.cus_phonenumber);
+                        cmd.Parameters.AddWithValue("@cus_email", userData.cus_email);
+                        cmd.Parameters.AddWithValue("@customerId", customerId);
+
+                        int rowsAffected = cmd.ExecuteNonQuery();
+
+                        if (rowsAffected > 0)
+                        {
+                            return Json(new { success = true, message = "User details updated successfully." });
+                        }
+                        else
+                        {
+                            return Json(new { success = false, message = "No rows were updated. Check if the user ID is correct." });
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return Json(new { success = false, message = "An error occurred while updating user details." });
+            }
+        }
+
+        [HttpPost]
+        public ActionResult DeleteAccount()
+        {
+            try
+            {
+                var userId = Session["UserId"];
+
+                if (userId == null)
+                {
+                    return Json(new { success = false, message = "User session not found." });
+                }
+
+                int customerId;
+                if (!int.TryParse(userId.ToString(), out customerId))
+                {
+                    return Json(new { success = false, message = "Invalid user session data." });
+                }
+
+                using (var connection = new SqlConnection(conn_str))
+                {
+                    connection.Open();
+                    using (var transaction = connection.BeginTransaction())
+                    {
+                        try
+                        {
+                            using (var deleteCartCommand = connection.CreateCommand())
+                            {
+                                deleteCartCommand.Transaction = transaction;
+                                deleteCartCommand.CommandType = CommandType.Text;
+                                deleteCartCommand.CommandText = "DELETE FROM cart WHERE cus_id = @cus_id";
+                                deleteCartCommand.Parameters.Add(new SqlParameter("@cus_id", SqlDbType.Int) { Value = customerId });
+                                deleteCartCommand.ExecuteNonQuery();
+                            }
+
+                            using (var deleteCustomerCommand = connection.CreateCommand())
+                            {
+                                deleteCustomerCommand.Transaction = transaction;
+                                deleteCustomerCommand.CommandType = CommandType.Text;
+                                deleteCustomerCommand.CommandText = "DELETE FROM customer WHERE cus_id = @cus_id";
+                                deleteCustomerCommand.Parameters.Add(new SqlParameter("@cus_id", SqlDbType.Int) { Value = customerId });
+                                int rowsAffected = deleteCustomerCommand.ExecuteNonQuery();
+
+                                if (rowsAffected > 0)
+                                {
+                                    // Clear session after successful deletion
+                                    Session.Clear();
+                                    Session.Abandon();
+
+                                    transaction.Commit();
+                                    return Json(new { success = true });
+                                }
+                                else
+                                {
+                                    transaction.Rollback();
+                                    return Json(new { success = false, message = "Failed to delete account." });
+                                }
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            transaction.Rollback();
+                            return Json(new { success = false, message = "An unexpected error occurred: " + ex.Message });
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "An unexpected error occurred: " + ex.Message });
+            }
+        }
+
+
+
+        [HttpPost]
+        public ActionResult Checkout(int userId)
+        {
+            if (Session["UserId"] == null)
+            {
+                return Json(new { success = false, message = "User not logged in or session mismatch" });
+            }
+
+            using (var db = new SqlConnection(conn_str))
+            {
+                db.Open();
+                using (var transaction = db.BeginTransaction())
+                {
+                    try
+                    {
+                        // Step 1: Retrieve all cart items for the user
+                        string cartQuery = "SELECT prod_id, cart_qty FROM CART WHERE cus_id = @userId";
+                        List<(int prodId, int cartCount)> cartItems = new List<(int, int)>();
+                        using (var cartCommand = new SqlCommand(cartQuery, db, transaction))
+                        {
+                            cartCommand.Parameters.AddWithValue("@userId", userId);
+                            using (var reader = cartCommand.ExecuteReader())
+                            {
+                                while (reader.Read())
+                                {
+                                    cartItems.Add((reader.GetInt32(0), reader.GetInt32(1)));
+                                }
+                            }
+                        }
+
+                        // Step 2: Update the stock for each product
+                        foreach (var item in cartItems)
+                        {
+                            string updateStockQuery = "UPDATE PRODUCT SET prod_stock = prod_stock - @cartCount WHERE prod_id = @prodId";
+                            using (var updateStockCommand = new SqlCommand(updateStockQuery, db, transaction))
+                            {
+                                updateStockCommand.Parameters.AddWithValue("@cartCount", item.cartCount);
+                                updateStockCommand.Parameters.AddWithValue("@prodId", item.prodId);
+                                updateStockCommand.ExecuteNonQuery();
+                            }
+                        }
+
+                        // Step 3: Delete all items from the cart
+                        string deleteCartQuery = "DELETE FROM CART WHERE cus_id = @userId";
+                        using (var deleteCartCommand = new SqlCommand(deleteCartQuery, db, transaction))
+                        {
+                            deleteCartCommand.Parameters.AddWithValue("@userId", userId);
+                            deleteCartCommand.ExecuteNonQuery();
+                        }
+
+                        // Commit the transaction
+                        transaction.Commit();
+                        return Json(new { success = true });
+                    }
+                    catch (Exception ex)
+                    {
+                        // Rollback the transaction if any operation fails
+                        transaction.Rollback();
+                        return Json(new { success = false, error = "An error occurred: " + ex.Message });
+                    }
+                }
+            }
+        }
+
     }
 }
+
+
+

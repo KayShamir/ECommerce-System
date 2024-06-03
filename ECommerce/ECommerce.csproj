@@ -171,6 +171,9 @@
     <Content Include="Scripts\bootstrap.esm.min.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
+    <Content Include="Scripts\MyJquery\checkout.js" />
+    <Content Include="Scripts\MyJquery\Cus_Delete.js" />
+    <Content Include="Scripts\MyJquery\Cus_Update.js" />
     <Content Include="🦆 icon _arrow back outline_.svg" />
     <Content Include="🦆 icon _logout_ %281%29.svg" />
     <Content Include="🦆 icon _logout_.svg" />
