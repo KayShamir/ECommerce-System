@@ -65,6 +65,11 @@ namespace ECommerce.Controllers
             string prod_category = Request["prod_category"];
             int prod_stock = Convert.ToInt32(Request["prod_stock"]);
 
+            if (prod_price < 0 || prod_stock < 0)
+            {
+                return Json(new { success = false, message = "Price and stock cannot be negative." }, JsonRequestBehavior.AllowGet);
+            }
+
             string image = Path.GetFileName(prod_file.FileName);
             string file_path = "C:\\Uploads";
             string filepath = Path.Combine(file_path, image);
@@ -104,57 +109,52 @@ namespace ECommerce.Controllers
         [HttpPost]
         public ActionResult postCustomer(HttpPostedFileBase cus_file)
         {
-            var data = new List<object>();
             string cus_firstname = Request["cus_firstname"];
             string cus_lastname = Request["cus_lastname"];
-            string cus_birthdate = Request["cus_birthdate"];
+            DateTime cus_birthdate;
+            if (!DateTime.TryParse(Request["cus_birthdate"], out cus_birthdate))
+            {
+                return Json(new { success = false, message = "Invalid birthdate." });
+            }
+
             string cus_address = Request["cus_address"];
-            string cus_phonenumber = Request["cus_number"];
+            string cus_number = Request["cus_number"];
             string cus_email = Request["cus_email"];
             string cus_pass = Request["cus_pass"];
 
-            if (cus_file != null && cus_file.ContentLength > 0)
+            if (cus_birthdate > DateTime.Now)
             {
-                string image = Path.GetFileName(cus_file.FileName);
-                string file_path = "C:\\Uploads";
-                string filepath = Path.Combine(file_path, image);
-                cus_file.SaveAs(filepath);
+                return Json(new { success = false, message = "Birthdate cannot be in the future." });
+            }
 
-                using (var db = new SqlConnection(conn_str))
+            string image = Path.GetFileName(cus_file.FileName);
+            string file_path = "C:\\Uploads";
+            string filepath = Path.Combine(file_path, image);
+            cus_file.SaveAs(filepath);
+
+            using (var db = new SqlConnection(conn_str))
+            {
+                db.Open();
+                using (var cmd = db.CreateCommand())
                 {
-                    db.Open();
-                    using (var cmd = db.CreateCommand())
-                    {
-                        cmd.CommandType = CommandType.Text;
-                        cmd.CommandText = "SELECT COUNT(*) FROM CUSTOMER WHERE CUS_EMAIL = @cus_email";
-                        cmd.Parameters.AddWithValue("@cus_email", cus_email);
-                        int emailCount = (int)cmd.ExecuteScalar();
+                    cmd.CommandType = CommandType.Text;
+                    cmd.CommandText = "INSERT INTO CUSTOMER (CUS_FIRSTNAME, CUS_LASTNAME, CUS_BIRTHDATE, CUS_ADDRESS, CUS_NUMBER, CUS_EMAIL, CUS_PASS, [CUS_FILE]) " +
+                                      "VALUES (@cus_firstname, @cus_lastname, @cus_birthdate, @cus_address, @cus_number, @cus_email, @cus_pass, @cus_file)";
+                    cmd.Parameters.AddWithValue("@CUS_FIRSTNAME", cus_firstname);
+                    cmd.Parameters.AddWithValue("@CUS_LASTNAME", cus_lastname);
+                    cmd.Parameters.AddWithValue("@CUS_BIRTHDATE", cus_birthdate);
+                    cmd.Parameters.AddWithValue("@CUS_ADDRESS", cus_address);
+                    cmd.Parameters.AddWithValue("@CUS_NUMBER", cus_number);
+                    cmd.Parameters.AddWithValue("@CUS_EMAIL", cus_email);
+                    cmd.Parameters.AddWithValue("@CUS_PASS", cus_pass);
+                    cmd.Parameters.AddWithValue("@CUS_FILE", image);
 
-                        if (emailCount > 0)
-                        {
-                            return Json(new { success = false, message = "Email already exists. Please use a different email." }, JsonRequestBehavior.AllowGet);
-                        }
-                        cmd.Parameters.Clear();
-
-                        cmd.CommandText = "INSERT INTO CUSTOMER (CUS_FIRSTNAME, CUS_LASTNAME, CUS_BIRTHDATE, CUS_ADDRESS, CUS_PHONENUMBER, CUS_EMAIL, CUS_PASS, CUS_FILE) " +
-                                          "VALUES (@cus_firstname, @cus_lastname, @cus_birthdate, @cus_address, @cus_phonenumber, @cus_email, @cus_pass, @cus_file)";
-                        cmd.Parameters.AddWithValue("@cus_firstname", cus_firstname);
-                        cmd.Parameters.AddWithValue("@cus_lastname", cus_lastname);
-                        cmd.Parameters.AddWithValue("@cus_birthdate", cus_birthdate);
-                        cmd.Parameters.AddWithValue("@cus_address", cus_address);
-                        cmd.Parameters.AddWithValue("@cus_phonenumber", cus_phonenumber);
-                        cmd.Parameters.AddWithValue("@cus_email", cus_email);
-                        cmd.Parameters.AddWithValue("@cus_pass", cus_pass);
-                        cmd.Parameters.AddWithValue("@cus_file", image);
-                        cmd.ExecuteNonQuery();
-                    }
+                    cmd.ExecuteNonQuery();
                 }
-                return Json(new { success = true, message = "Customer added successfully!" }, JsonRequestBehavior.AllowGet);
             }
-            else
-            {
-                return Json(new { success = false, message = "File upload failed." }, JsonRequestBehavior.AllowGet);
-            }
+
+            var data = new List<object>();
+            return Json(data, JsonRequestBehavior.AllowGet);
         }
         public ActionResult Dashboard_Admin()
         {
@@ -175,6 +175,7 @@ namespace ECommerce.Controllers
             Response.Headers.Add("content-disposition", "inline");
             return new FilePathResult(filepath, mime);
         }
+        [HttpPost]
         public ActionResult DeleteProduct()
         {
             var data = new List<object>();
@@ -183,6 +184,25 @@ namespace ECommerce.Controllers
             using (var db = new SqlConnection(conn_str))
             {
                 db.Open();
+                using (var cmd = db.CreateCommand())
+                {
+                    cmd.CommandType = CommandType.Text;
+                    cmd.CommandText = "SELECT PROD_STOCK FROM PRODUCT WHERE PROD_ID = @PROD_ID";
+                    cmd.Parameters.AddWithValue("@PROD_ID", prod_id);
+
+                    var stock = (int)cmd.ExecuteScalar();
+
+                    if (stock > 0)
+                    {
+                        data.Add(new
+                        {
+                            success = false,
+                            message = "Cannot delete product with stock greater than 0."
+                        });
+                        return Json(data, JsonRequestBehavior.AllowGet);
+                    }
+                }
+
                 using (var cmd = db.CreateCommand())
                 {
                     cmd.CommandType = CommandType.Text;
@@ -195,14 +215,23 @@ namespace ECommerce.Controllers
                     {
                         data.Add(new
                         {
-                            mess = 1
+                            success = true,
+                            message = "Product removed successfully."
                         });
                     }
-
+                    else
+                    {
+                        data.Add(new
+                        {
+                            success = false,
+                            message = "Failed to delete product."
+                        });
+                    }
                 }
             }
             return Json(data, JsonRequestBehavior.AllowGet);
         }
+
         [HttpGet]
         public ActionResult GetProduct(int prod_id)
         {

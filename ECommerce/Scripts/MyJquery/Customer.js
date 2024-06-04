@@ -2,10 +2,16 @@
     $('#btn_submit').click(function (event) {
         event.preventDefault();
 
+        var birthdate = $('#cus_birthdate').val();
+        if (!isValidDate(birthdate)) {
+            alert('Please enter a valid birthdate.');
+            return;
+        }
+
         var data = new FormData();
         data.append('cus_firstname', $('#cus_firstname').val());
         data.append('cus_lastname', $('#cus_lastname').val());
-        data.append('cus_birthdate', $('#cus_birthdate').val());
+        data.append('cus_birthdate', birthdate);
         data.append('cus_address', $('#cus_address').val());
         data.append('cus_number', $('#cus_number').val());
         data.append('cus_email', $('#cus_email').val());
@@ -32,6 +38,16 @@
             }
         });
     });
+
+    function isValidDate(dateString) {
+        var date = new Date(dateString);
+        var today = new Date();
+        if (date > today) {
+            return false;
+        }
+        return true;
+    }
+
     $('#btnBack').click(function () {
         window.location.href = '../Home/Login_Page';
     });

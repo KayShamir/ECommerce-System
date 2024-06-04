@@ -1,5 +1,12 @@
 ﻿$().ready(function () {
     $('#btn_submit').click(function () {
+        var prodPrice = parseFloat($('#prod_price').val());
+        var prodStock = parseInt($('#prod_stock').val());
+
+        if (prodPrice < 0 || prodStock < 0) {
+            toastr.error('Price and stock cannot be negative.');
+            return;
+        }
         var data = new FormData();
         data.append('prod_name', $('#prod_name').val());
         data.append('prod_desc', $('#prod_desc').val());
@@ -24,7 +31,7 @@
                 $('#addModal').modal('hide');
                 setTimeout(function () {
                     location.reload();
-                }, 3000);
+                }, 1000);
             },
             error: function () {
                 alert('Error uploading file.');
